@@ -4,8 +4,8 @@
 
 #include <SFML/Graphics.hpp>
 using namespace sf;
-//const int offset=2;
-//const int square_size=56;
+const int offset=2;
+const int square_size=56.875;
 int main()
 {
 
