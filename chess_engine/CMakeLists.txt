@@ -18,7 +18,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
 
 # add the executable
-add_executable(chess_engine main.cpp piece/piece.cpp board/board.cpp)
+add_executable(chess_engine main.cpp piece/piece.cpp  board/board.cpp)
 
 add_subdirectory(piece board)
 include_directories(piece board)

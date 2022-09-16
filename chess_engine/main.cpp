@@ -1,24 +1,26 @@
 #include <iostream>
-#include "piece.h"
-#include "board.h"
-
+#include "king.h"
 #include <SFML/Graphics.hpp>
 using namespace sf;
-const int offset=2;
-const int square_size=56.875;
 int main()
 {
 
-    RenderWindow window(sf::VideoMode(455,455), "SFML works!");
+    RenderWindow window(sf::VideoMode(WINDOW_SIZE, WINDOW_SIZE), "Chesss!");
 	Texture t1,t2;
 	t1.loadFromFile("../images/board0.png");
 	t2.loadFromFile("../images/wKing.png");
-	Sprite mBoard, wKing;
+	Sprite mBoard, s1;
 	mBoard.setTexture(t1);
-	wKing.setTexture(t2);
+	s1.setTexture(t2);
+	
 	Vector2f scale = mBoard.getScale();
-    wKing.setScale(scale.x/20,scale.y/20);
-	wKing.setPosition(2*square_size-offset,-2); 
+	
+	king wKing(100, &s1, scale);
+    //wKing.image->setScale(scale.x/20,scale.y/20);
+	
+	wKing.image->setPosition(SQUARE_SIZE+OFFSET,OFFSET); 
+//	wKing.value=3;
+	wKing.move( 2, 3);
 	while (window.isOpen())
     {
         sf::Event event;
@@ -30,7 +32,7 @@ int main()
 
         window.clear();
         window.draw(mBoard);
-        window.draw(wKing);
+        window.draw(*wKing.image);
         window.display();
     }
 

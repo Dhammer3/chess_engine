@@ -1,1 +1,2 @@
-add_library(piece piece.cpp)
+add_library(piece piece.cpp king.cpp)
+
