@@ -7,8 +7,9 @@ class piece:sf::Sprite
 				piece(int value, sf::Sprite *image, sf::Vector2f scale);
    				void move(int x_pos, int y_pos);
 				int value;
+				int x_pos, y_pos;
 				sf::Sprite *image;
-			  			 
+				void set_position(int x, int y);	  			 
 };
 
 
