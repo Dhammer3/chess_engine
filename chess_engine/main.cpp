@@ -2,13 +2,15 @@
 //#include "piece.h"
 
 #include <SFML/Graphics.hpp>
+using namespace sf;
 int main()
 {
 
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
-
+    RenderWindow window(sf::VideoMode(450,450), "SFML works!");
+	Texture board;
+	board.loadFromFile("../images/board0.png");
+	Sprite mBoard;
+	mBoard.setTexture(board);
     while (window.isOpen())
     {
         sf::Event event;
@@ -19,7 +21,7 @@ int main()
         }
 
         window.clear();
-        window.draw(shape);
+        window.draw(mBoard);
         window.display();
     }
 
