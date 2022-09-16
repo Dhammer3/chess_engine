@@ -5,7 +5,6 @@ class piece
                 virtual void move();
         protected:
               const int value;
-	      std::string to_string
-}
+};
 
 

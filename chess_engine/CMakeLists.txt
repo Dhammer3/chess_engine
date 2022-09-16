@@ -7,6 +7,7 @@ include(FetchContent)
 
 set(BUILD_SHARED_LIBS OFF)
 
+#get the sfml lib
 FetchContent_Declare(
  SFML
  GIT_REPOSITORY https://github.com/SFML/SFML.git
@@ -17,9 +18,9 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
 
 # add the executable
-add_executable(chess_engine main.cpp)
+add_executable(chess_engine main.cpp piece/piece.cpp board/board.cpp)
 
-add_subdirectory(piece)
-
-target_link_directories(${PROJECT_NAME} PUBLIC piece)
+add_subdirectory(piece board)
+include_directories(piece board)
+target_link_directories(${PROJECT_NAME} PUBLIC piece )
 target_link_libraries(${PROJECT_NAME} piece sfml-graphics)
