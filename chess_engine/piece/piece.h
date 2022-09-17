@@ -7,6 +7,7 @@
  class piece:sf::Sprite
 {
         public:
+				piece(){}
 				piece(int value, sf::Sprite *image, sf::Vector2f scale, aliance::Enum a);
    				virtual bool move(int x_pos, int y_pos)=0;
 				int value;
@@ -15,8 +16,9 @@
 				aliance::Enum aliance;
 				void set_position(int x, int y);
 				void increment_move_counter();
-				bool in_check(std::vector<piece> pieces, int kingX, int kingY);
+				bool in_check(std::vector<piece*> pieces, int kingX, int kingY);
 				bool enemy_piece(piece *p);
+			
 	  			 
 };
 # endif

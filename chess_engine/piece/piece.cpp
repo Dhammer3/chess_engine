@@ -20,18 +20,24 @@ void piece::increment_move_counter()
 {
 	this->move_counter+=1;
 }
-// bool piece::in_check(std::vector<piece> pieces, int kingX, int kingY)
-// {
-// 	bool can_move_to_king_pos=faasdlse;
-// 	for (piece p : pieces)
-// 	{
-// 		if (enemy_piece(p))
-// 		{
-// 			can_move_to_king_pos= p.move(kingX, kingY);
-// 		}
-// 	}
-// 	return can_move_to_king_pos;
-// }
+bool piece::in_check(std::vector<piece*> pieces, int kingX, int kingY)
+{
+	bool can_move_to_king_pos=false;
+	for (int i=0; i<pieces.size(); i++)
+	{
+        piece *p = pieces[i];
+		if (enemy_piece(p))
+		{
+			can_move_to_king_pos= p->move(kingX, kingY);
+			if(can_move_to_king_pos)
+			{
+				return true;
+				std::cout << "king is in check"<<std::endl;
+			}
+		}
+	}
+	return can_move_to_king_pos;
+}
  bool piece::enemy_piece(piece *p)
  {
  	return this->aliance!=p->aliance;
