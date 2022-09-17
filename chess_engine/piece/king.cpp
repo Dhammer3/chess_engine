@@ -4,10 +4,13 @@ void king::move( int x_pos, int y_pos)
 	{
 		int diff_x= this->x_pos-x_pos;
 		int diff_y= this->y_pos-y_pos;
-		if (diff_x-diff_y>2||diff_x-diff_y<-2)
+		int x_squared= diff_x*diff_x;
+		int y_squared= diff_y*diff_y;
+		if (x_squared+y_squared>2)
 		{
 			//invalid move
-			return;
+	
+				return;
 		}	
 		
 
