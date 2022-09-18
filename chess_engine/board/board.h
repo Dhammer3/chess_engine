@@ -9,11 +9,17 @@ class board
 {
 	public:
 		board();
-		board(std::vector<piece*> pieces);
-	private:	
+		board(std::vector<piece*> pieces, sf::RenderWindow& window , sf::Sprite *image);
+		sf::RenderWindow *window;
+		sf::Sprite *board_image;
 		piece* game_board[8][8];
 		piece* (*get_board())[8];
+		void clear_board();
 		void set_board(std::vector<piece*> pieces);
+		bool piece_in_location(int x, int y);
+		bool friendly_piece_in_location(aliance::Enum a, int x, int y);
+		void draw_board(std::vector<piece*> pieces);
+
 
 		
 };

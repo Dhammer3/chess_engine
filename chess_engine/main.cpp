@@ -41,6 +41,7 @@ int main()
 	std::vector<piece*> pieces;
 	pieces.push_back(&wKing);
 	pieces.push_back(&wQueen);
+	board game_board(pieces, window, &mBoard);
 
 	while (window.isOpen())
     {
@@ -53,20 +54,19 @@ int main()
 			{
 				if(event.mouseButton.button==sf::Mouse::Left)
 				{
-				Vector2i mouse_pos = sf::Mouse::getPosition(window);
-				init_x = static_cast<int>(mouse_pos.x/SQUARE_SIZE);
-				init_y = static_cast<int>(mouse_pos.y/SQUARE_SIZE);
-				
-				//selected a piece
-				for(int i=0; i<pieces.size(); i++)
-				{
-					if (init_x==pieces[i]->x_pos&&init_y==pieces[i]->y_pos)
+					Vector2i mouse_pos = sf::Mouse::getPosition(window);
+					init_x = static_cast<int>(mouse_pos.x/SQUARE_SIZE);
+					init_y = static_cast<int>(mouse_pos.y/SQUARE_SIZE);
+					
+					//selected a piece
+					for(int i=0; i<pieces.size(); i++)
 					{
-						flag=true;		
-						index=i;
-						std::cout<<"here1"<<std::endl;
+						if (init_x==pieces[i]->x_pos&&init_y==pieces[i]->y_pos)
+						{
+							flag=true;		
+							index=i;
+						}
 					}
-				}
 			
 				}
 			}
@@ -78,25 +78,17 @@ int main()
 				if(flag)
 				{
 				flag=!flag;
-					if(pieces[index]->move(move_x, move_y))
+					if(pieces[index]->move(&game_board, move_x, move_y))
 					{
-					pieces[index]->set_position(move_x, move_y);
-					pieces[index]->increment_move_counter();
+						pieces[index]->set_position(move_x, move_y);
+						pieces[index]->increment_move_counter();
+						
 					}
 	
 				}
-					std::cout<<"here3"<<std::endl;
 			}
         }
-		
-        window.clear();
-        window.draw(mBoard);
-		for (int i=0; i<pieces.size(); i++)
-		{
-        window.draw(*pieces[i]->image);
-		}
-		
-        window.display();
+		game_board.draw_board(pieces);
     }
 
     return 0;
