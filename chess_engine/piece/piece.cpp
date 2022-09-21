@@ -64,12 +64,10 @@ bool piece::in_check(board *board, int x_pos, int y_pos)
 				{
 
 					piece *p = board->game_board[i][j];
-					if (enemy_piece(p))
+					if (enemy_piece(p) && this->piece_type == piece_type::KING)
 					{
 						recursion_counter += 1;
-
 						bool can_move_to_king_pos = p->move(board, x_pos, y_pos);
-
 						if (can_move_to_king_pos)
 						{
 							std::cout << "cant move there" << std::endl;
