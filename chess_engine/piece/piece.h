@@ -24,5 +24,6 @@ public:
 	int x_vector(int x_move);
 	int y_vector(int y_move);
 	int diagonal_vector(int x_move, int y_move);
+	bool piece_in_way(board *game_board, int x_move, int y_move);
 };
 #endif

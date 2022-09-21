@@ -24,48 +24,13 @@ bool piece::move(board *game_board, int x_move, int y_move)
 	// game_board_copy->game_board[x_pos][y_pos] = this;
 
 	bool in_check = this->put_self_in_check(game_board, x_move, y_move);
-	// make a mock move on a copy of the board
-	// check if that board state puts the moving player in check.
-	if (game_board->friendly_piece_in_location(this->aliance, x_move, y_move) || in_check)
+	bool piece_in_way = this->piece_in_way(game_board, x_move, y_move);
+	bool friendly_piece_in_location = game_board->friendly_piece_in_location(this->aliance, x_move, y_move);
+	if (friendly_piece_in_location || in_check || piece_in_way)
 	{
 		valid_move = false;
 	}
-	// or if pieces in the way
-	int x_vector = this->x_vector(x_move) * -1;
-	int y_vector = this->y_vector(y_move) * -1;
-	std::cout << "====================: " << std::endl;
 
-	std::cout << "x_vector: " << x_vector << std::endl;
-	std::cout << "y_vector: " << y_vector << std::endl;
-	std::cout << "this->x_pos: " << this->x_pos << std::endl;
-	std::cout << "this->y_pos: " << this->y_pos << std::endl;
-	if (this->piece_type != piece_type::KNIGHT)
-	{
-
-		for (int x = x_vector < 0 ? this->x_pos - 1 : this->x_pos + 1;
-			 x <= this->x_pos + x_vector;
-			 x_vector < 0 ? x-- : x++)
-		{
-			for (int y = y_vector < 0 ? this->y_pos - 1 : this->y_pos + 1;
-				 y <= this->y_pos + y_vector;
-				 y_vector < 0 ? y-- : y++)
-			{
-				std::cout << "*********** " << std::endl;
-
-				std::cout << "x_vector: " << x_vector << std::endl;
-				std::cout << "x: " << x << std::endl;
-				if (x > 8 || x < 0)
-				{
-					break;
-				}
-				if (game_board->piece_in_location(x, y))
-				{
-					std::cout << "pieces in the way!" << std::endl;
-					valid_move = false;
-				}
-			}
-		}
-	}
 	return valid_move;
 }
 void piece::set_position(int x, int y)
@@ -142,4 +107,41 @@ int piece::diagonal_vector(int x_move, int y_move)
 	}
 	int move_vector = sqrt(x * x + y * y);
 	return move_vector;
+}
+bool piece::piece_in_way(board *game_board, int x_move, int y_move)
+{
+	// or if pieces in the way
+	bool valid_move = true;
+	int x_vector = this->x_vector(x_move) * -1;
+	int y_vector = this->y_vector(y_move) * -1;
+	int x = 0;
+	int y = 0;
+
+	std::cout << "====================: " << std::endl;
+	if (this->piece_type != piece_type::KNIGHT)
+	{
+		while (x != x_vector || y != y_vector)
+		{
+
+			if (x != x_vector)
+			{
+				x_vector < 0 ? x-- : x++;
+			}
+			if (y != y_vector)
+			{
+				y_vector < 0 ? y-- : y++;
+			}
+			if ((this->x_pos + x) == x_move && (this->y_pos + y) == y_move)
+			{
+				break;
+			}
+			if (game_board->piece_in_location(this->x_pos + x, this->y_pos + y))
+			{
+				std::cout << "piece in the way!" << std::endl;
+
+				valid_move = false;
+			}
+		}
+	}
+	return valid_move;
 }
