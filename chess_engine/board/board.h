@@ -19,6 +19,7 @@ class board
 		bool piece_in_location(int x, int y);
 		bool friendly_piece_in_location(aliance::Enum a, int x, int y);
 		void draw_board(std::vector<piece*> pieces);
+		std::vector<int> get_king_pos(aliance::Enum a);
 
 
 		

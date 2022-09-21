@@ -4,6 +4,7 @@ board::board(std::vector<piece*> pieces, sf::RenderWindow& window , sf::Sprite *
     this->set_board(pieces);
     this->window=&window;
     this->board_image=image;
+    // this->pieces
 };
 void board::clear_board()
 {
@@ -23,11 +24,7 @@ void board::set_board(std::vector<piece*> pieces)
         piece* p = pieces[i];
         this->game_board[p->x_pos][p->y_pos]=p;
     }
-};
-piece* (*board::get_board())[8] 
-{
- return this->game_board;
-};
+}
 bool board::piece_in_location(int x, int y)
 {
     return this->game_board[x][y]!=0;
@@ -59,4 +56,27 @@ void board::draw_board(std::vector<piece*> pieces)
         }
 		
         this->window->display();
+}
+std::vector<int> board::get_king_pos(aliance::Enum a)
+{
+    for(int i=0; i<8; i++)
+    {
+        for(int j=0; j<8; j++)
+        {
+            if(this->game_board[i][j])
+            {
+                piece* p = game_board[i][j];
+                if(p->aliance==a && p->piece_type==piece_type::Enum::KING)
+                {
+                    std::vector<int> ret;
+                    //x
+                    ret.push_back(i);
+                    //y
+                    ret.push_back(j);
+                    return ret;
+                    
+                }
+            }
+        }
+    }
 }
