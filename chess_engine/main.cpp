@@ -30,7 +30,8 @@ int main()
 	s1.setTexture(t1);
 	s2.setTexture(t2);
 
-	s3.setTexture(t4);
+	s3.setTexture(t3);
+	s4.setTexture(t4);
 
 	int init_x, init_y, move_x, move_y, index;
 	bool flag;
@@ -38,16 +39,21 @@ int main()
 	king wKing(100, &s1, scale, aliance::WHITE);
 	king bKing(100, &s2, scale, aliance::BLACK);
 
-	queen bQueen(10, &s3, scale, aliance::BLACK);
+	queen wQueen(10, &s3, scale, aliance::WHITE);
+	queen bQueen(10, &s4, scale, aliance::BLACK);
+
 	wKing.set_position(4, 7);
 	bKing.set_position(1, 7);
 
 	bQueen.set_position(0, 0);
+	bQueen.set_position(0, 1);
 
 	std::vector<piece *> pieces;
 	pieces.push_back(&wKing);
 	pieces.push_back(&bKing);
 	pieces.push_back(&bQueen);
+	pieces.push_back(&wQueen);
+
 	board game_board(pieces, window, &mBoard);
 
 	while (window.isOpen())
