@@ -23,7 +23,7 @@ bool piece::move(board *game_board, int x_pos, int y_pos)
 	// game_board_copy->game_board[this->x_pos][this->y_pos] = NULL;
 	// game_board_copy->game_board[x_pos][y_pos] = this;
 
-	bool in_check = this->in_check(game_board, x_pos, y_pos);
+	bool in_check = this->put_self_in_check(game_board, x_pos, y_pos);
 	// make a mock move on a copy of the board
 	// check if that board state puts the moving player in check.
 	if (game_board->friendly_piece_in_location(this->aliance, x_pos, y_pos) || in_check)
@@ -43,8 +43,7 @@ void piece::increment_move_counter()
 {
 	this->move_counter += 1;
 }
-// if any enemy piece can move to the kings position before the move
-bool piece::in_check(board *board, int x_pos, int y_pos)
+bool piece::put_self_in_check(board *board, int x_pos, int y_pos)
 {
 
 	// static bool can_move_to_king_pos = false;

@@ -19,7 +19,7 @@ public:
 	piece_type::Enum piece_type;
 	void set_position(int x, int y);
 	void increment_move_counter();
-	bool in_check(board *game_board, int kingX, int kingY);
+	bool put_self_in_check(board *game_board, int kingX, int kingY);
 	bool enemy_piece(piece *p);
 	int x_vector(int x_move);
 	int y_vector(int y_move);
