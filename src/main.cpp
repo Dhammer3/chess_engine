@@ -1,10 +1,14 @@
 #include <iostream>
 #include "king.h"
 #include "queen.h"
+#include "bishop.h"
+#include "unit_tests.h" //todo fix in the cmake
 #include <SFML/Graphics.hpp>
 using namespace sf;
 int main()
 {
+	unit_tests a;
+	a.run_tests();
 
 	RenderWindow window(sf::VideoMode(WINDOW_SIZE, WINDOW_SIZE), "Chesss!");
 	Texture t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13;
@@ -32,15 +36,18 @@ int main()
 
 	s3.setTexture(t3);
 	s4.setTexture(t4);
+	s9.setTexture(t9);
 
 	int init_x, init_y, move_x, move_y, index;
 	bool flag;
 	Vector2f scale = mBoard.getScale();
-	king wKing(100, &s1, scale, aliance::WHITE);
-	king bKing(100, &s2, scale, aliance::BLACK);
+	king wKing(&s1, scale, aliance::WHITE);
+	king bKing(&s2, scale, aliance::BLACK);
 
-	queen wQueen(10, &s3, scale, aliance::WHITE);
-	queen bQueen(10, &s4, scale, aliance::BLACK);
+	queen wQueen(&s3, scale, aliance::WHITE);
+	queen bQueen(&s4, scale, aliance::BLACK);
+
+	bishop bBishop(&s9, scale, aliance::BLACK);
 
 	wKing.set_position(4, 7);
 	bKing.set_position(1, 7);
@@ -48,11 +55,14 @@ int main()
 	bQueen.set_position(0, 0);
 	bQueen.set_position(0, 1);
 
+	bBishop.set_position(4, 0);
+
 	std::vector<piece *> pieces;
 	pieces.push_back(&wKing);
 	pieces.push_back(&bKing);
 	pieces.push_back(&bQueen);
 	pieces.push_back(&wQueen);
+	pieces.push_back(&bBishop);
 
 	board game_board(pieces, window, &mBoard);
 

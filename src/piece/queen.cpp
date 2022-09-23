@@ -1,6 +1,6 @@
 #include "queen.h"
 #include <cmath>
-queen::queen(int value, sf::Sprite *s, sf::Vector2f v, aliance::Enum a) : piece(value, s, v, a, piece_type::QUEEN) {}
+queen::queen(sf::Sprite *s, sf::Vector2f v, aliance::Enum a, int value) : piece(s, v, a, piece_type::QUEEN, value) {}
 bool queen::move(board *game_board, int x_move, int y_move)
 {
 	bool valid_move = piece::move(game_board, x_move, y_move);

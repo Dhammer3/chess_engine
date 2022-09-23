@@ -1,6 +1,6 @@
 #include "piece.h"
 #include <cmath>
-piece::piece(int value, sf::Sprite *image, sf::Vector2f scale, aliance::Enum a, piece_type::Enum pt)
+piece::piece(sf::Sprite *image, sf::Vector2f scale, aliance::Enum a, piece_type::Enum pt, int value)
 {
 	this->value = value;
 	this->image = image;
@@ -11,7 +11,8 @@ piece::piece(int value, sf::Sprite *image, sf::Vector2f scale, aliance::Enum a, 
 	this->aliance = a;
 	this->piece_type = pt;
 }
-// no piece can capture its own piece or put itself in check
+// no piece can capture its own piece or put itself in chec
+
 bool piece::move(board *game_board, int x_move, int y_move)
 {
 
@@ -29,7 +30,6 @@ bool piece::move(board *game_board, int x_move, int y_move)
 	game_board_copy->game_board[x_move][y_move] = this;
 
 	// if they are in check after the move, they cannot make that move.
-
 	bool in_check = this->put_self_in_check(game_board_copy, x_move, y_move, king_x, king_y);
 	bool piece_in_way = this->piece_in_way(game_board, x_move, y_move);
 	bool capturing_own_piece = game_board->capturing_own_piece(this->aliance, x_move, y_move);
@@ -40,16 +40,19 @@ bool piece::move(board *game_board, int x_move, int y_move)
 
 	return valid_move;
 }
+
 void piece::set_position(int x, int y)
 {
 	this->image->setPosition(x * SQUARE_SIZE + OFFSET, y * SQUARE_SIZE + OFFSET);
 	this->x_pos = x;
 	this->y_pos = y;
 }
+
 void piece::increment_move_counter()
 {
 	this->move_counter += 1;
 }
+
 bool piece::put_self_in_check(board *board, int x_move, int y_move, int king_x, int king_y)
 {
 
@@ -79,21 +82,15 @@ bool piece::put_self_in_check(board *board, int x_move, int y_move, int king_x, 
 						{
 							enemy_piece_can_move = p->move(board, king_x, king_y);
 						}
-						if (enemy_piece_can_move)
-						{
-							std::cout << "you cant put yourself in check!" << std::endl;
-
-							return true;
-						}
 					}
 				}
 			}
 		}
 	}
-
 	recursion_counter = 0;
-	return false;
+	return enemy_piece_can_move;
 }
+
 bool piece::enemy_piece(piece *p)
 {
 	return this->aliance != p->aliance;
@@ -110,8 +107,6 @@ int piece::diagonal_vector(int x_move, int y_move)
 {
 	int x = this->x_vector(x_move);
 	int y = this->y_vector(y_move);
-	std::cout << "y " << y << std::endl;
-	std::cout << "x " << x << std::endl;
 
 	if (x == 0 || y == 0)
 	{
@@ -148,8 +143,6 @@ bool piece::piece_in_way(board *game_board, int x_move, int y_move)
 			}
 			if (game_board->piece_in_location(this->x_pos + x, this->y_pos + y))
 			{
-				std::cout << "piece in the way!" << std::endl;
-
 				piece_in_way = true;
 			}
 		}
