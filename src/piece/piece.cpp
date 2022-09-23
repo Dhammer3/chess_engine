@@ -16,17 +16,24 @@ bool piece::move(board *game_board, int x_move, int y_move)
 {
 
 	bool valid_move = true;
-	// std::vector<int> king_pos = game_board->get_king_pos(this->aliance);
-	// int &king_x = king_pos[0];
-	// int &king_y = king_pos[1];
+	std::vector<int> king_pos = game_board->get_king_pos(this->aliance);
+	int &king_x = king_pos[0];
+	int &king_y = king_pos[1];
+	// copy the board
 	board *game_board_copy = new board(*game_board);
-	// game_board_copy->game_board[this->x_pos][this->y_pos] = NULL;
-	// game_board_copy->game_board[x_pos][y_pos] = this;
 
-	bool in_check = this->put_self_in_check(game_board, x_move, y_move);
+	// make the mock move and set the king pos to empty
+	game_board_copy->game_board[this->x_pos][this->y_pos] = NULL;
+	game_board_copy->game_board[king_x][king_y] = NULL;
+
+	game_board_copy->game_board[x_move][y_move] = this;
+
+	// if they are in check after the move, they cannot make that move.
+
+	bool in_check = this->put_self_in_check(game_board_copy, x_move, y_move, king_x, king_y);
 	bool piece_in_way = this->piece_in_way(game_board, x_move, y_move);
-	bool friendly_piece_in_location = game_board->friendly_piece_in_location(this->aliance, x_move, y_move);
-	if (friendly_piece_in_location || in_check || piece_in_way)
+	bool capturing_own_piece = game_board->capturing_own_piece(this->aliance, x_move, y_move);
+	if (capturing_own_piece || in_check || piece_in_way)
 	{
 		valid_move = false;
 	}
@@ -43,15 +50,11 @@ void piece::increment_move_counter()
 {
 	this->move_counter += 1;
 }
-bool piece::put_self_in_check(board *board, int x_pos, int y_pos)
+bool piece::put_self_in_check(board *board, int x_move, int y_move, int king_x, int king_y)
 {
 
-	// static bool can_move_to_king_pos = false;
-	// if (can_move_to_king_pos)
-	// {
-	// 	return true;
-	// }
 	static int recursion_counter = 0;
+	bool enemy_piece_can_move = false;
 	if (recursion_counter == 0)
 	{
 
@@ -63,13 +66,22 @@ bool piece::put_self_in_check(board *board, int x_pos, int y_pos)
 				{
 
 					piece *p = board->game_board[i][j];
-					if (enemy_piece(p) && this->piece_type == piece_type::KING)
+					if (enemy_piece(p))
 					{
 						recursion_counter += 1;
-						bool can_move_to_king_pos = p->move(board, x_pos, y_pos);
-						if (can_move_to_king_pos)
+						// the king is moving, check the spot it is moving to to see if it can move there.
+						if (this->piece_type == piece_type::KING)
 						{
-							std::cout << "cant move there" << std::endl;
+							enemy_piece_can_move = p->move(board, x_move, y_move);
+						}
+						// if different piece is moving, check to see if any enemies can move to the kings position.
+						else
+						{
+							enemy_piece_can_move = p->move(board, king_x, king_y);
+						}
+						if (enemy_piece_can_move)
+						{
+							std::cout << "you cant put yourself in check!" << std::endl;
 
 							return true;
 						}
@@ -111,13 +123,12 @@ int piece::diagonal_vector(int x_move, int y_move)
 bool piece::piece_in_way(board *game_board, int x_move, int y_move)
 {
 	// or if pieces in the way
-	bool valid_move = true;
+	bool piece_in_way = false;
 	int x_vector = this->x_vector(x_move) * -1;
 	int y_vector = this->y_vector(y_move) * -1;
 	int x = 0;
 	int y = 0;
 
-	std::cout << "====================: " << std::endl;
 	if (this->piece_type != piece_type::KNIGHT)
 	{
 		while (x != x_vector || y != y_vector)
@@ -139,9 +150,9 @@ bool piece::piece_in_way(board *game_board, int x_move, int y_move)
 			{
 				std::cout << "piece in the way!" << std::endl;
 
-				valid_move = false;
+				piece_in_way = true;
 			}
 		}
 	}
-	return valid_move;
+	return piece_in_way;
 }
