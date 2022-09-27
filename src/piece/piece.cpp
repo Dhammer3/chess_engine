@@ -15,24 +15,28 @@ piece::piece(sf::Sprite *image, sf::Vector2f scale, aliance::Enum a, piece_type:
 
 bool piece::move(board *game_board, int x_move, int y_move)
 {
-
+	bool in_check = false;
 	bool valid_move = true;
 	std::vector<int> king_pos = game_board->get_king_pos(this->aliance);
+	bool null_king_pos = king_pos.empty();
 	int &king_x = king_pos[0];
 	int &king_y = king_pos[1];
 	// copy the board
 	board *game_board_copy = new board(*game_board);
 
 	// make the mock move and set the king pos to empty
-	game_board_copy->game_board[this->x_pos][this->y_pos] = NULL;
-	game_board_copy->game_board[king_x][king_y] = NULL;
-
-	game_board_copy->game_board[x_move][y_move] = this;
+	if (!null_king_pos)
+	{
+		game_board_copy->game_board[this->x_pos][this->y_pos] = NULL;
+		game_board_copy->game_board[king_x][king_y] = NULL;
+		game_board_copy->game_board[x_move][y_move] = this;
+		in_check = this->put_self_in_check(game_board_copy, x_move, y_move, king_x, king_y);
+	}
 
 	// if they are in check after the move, they cannot make that move.
-	bool in_check = this->put_self_in_check(game_board_copy, x_move, y_move, king_x, king_y);
 	bool piece_in_way = this->piece_in_way(game_board, x_move, y_move);
 	bool capturing_own_piece = game_board->capturing_own_piece(this->aliance, x_move, y_move);
+
 	if (capturing_own_piece || in_check || piece_in_way)
 	{
 		valid_move = false;
@@ -40,7 +44,31 @@ bool piece::move(board *game_board, int x_move, int y_move)
 
 	return valid_move;
 }
+// todo
+bool piece::is_castling(board *game_board, int x_move, int y_move)
+{
 
+	bool is_castling = false;
+	bool two_space_x_move = abs(this->x_vector(x_move)) == 2;
+	bool no_y_move = y_move == this->y_pos;
+	bool first_move = this->move_counter == 0;
+	int rook_x = this->x_vector(x_move) > 0 ? x_move - 2 : x_move + 1;
+	bool is_piece = (game_board->game_board[rook_x][y_move]);
+	piece rook;
+	bool rook_can_castle = false;
+	bool king_can_castle = two_space_x_move && no_y_move && first_move && !this->piece_in_way(game_board, rook_x, y_move);
+	if (is_piece)
+	{
+		rook = *game_board->game_board[rook_x][y_move];
+		rook_can_castle = rook.piece_type == piece_type::ROOK && rook.aliance == this->aliance && rook.move_counter == 0;
+	}
+	if (rook_can_castle && king_can_castle)
+	{
+		is_castling = true;
+	}
+
+	return is_castling;
+}
 void piece::set_position(int x, int y)
 {
 	this->image->setPosition(x * SQUARE_SIZE + OFFSET, y * SQUARE_SIZE + OFFSET);
@@ -81,6 +109,11 @@ bool piece::put_self_in_check(board *board, int x_move, int y_move, int king_x, 
 						else
 						{
 							enemy_piece_can_move = p->move(board, king_x, king_y);
+						}
+						if (enemy_piece_can_move)
+						{
+							std::cout << "cant put yourself in check!" << std::endl;
+							return true;
 						}
 					}
 				}

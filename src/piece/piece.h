@@ -18,6 +18,8 @@ public:
 	aliance::Enum aliance;
 	piece_type::Enum piece_type;
 	void set_position(int x, int y);
+	bool is_castling(board *game_board, int x_move, int y_move);
+
 	void increment_move_counter();
 	bool put_self_in_check(board *game_board, int x_move, int y_move, int king_x, int king_y);
 	bool enemy_piece(piece *p);

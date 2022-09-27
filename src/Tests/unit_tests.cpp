@@ -3,6 +3,7 @@
 #include "../piece/king.h"
 #include "../piece/queen.h"
 #include "../piece/bishop.h"
+#include "../piece/rook.h"
 
 #include <SFML/Graphics.hpp>
 // Function to test
@@ -34,6 +35,7 @@ void unit_tests::run_tests()
     queen wQueen(&s3, scale, aliance::WHITE);
     queen bQueen(&s4, scale, aliance::BLACK);
     bishop bBishop(&s5, scale, aliance::BLACK);
+    rook wRook(&s6, scale, aliance::WHITE);
 
     wKing.set_position(4, 7);
     bKing.set_position(1, 7);
@@ -41,6 +43,7 @@ void unit_tests::run_tests()
     bQueen.set_position(0, 0);
     bQueen.set_position(0, 1);
     bBishop.set_position(4, 0);
+    wRook.set_position(6, 7);
 
     std::vector<piece *> pieces;
     pieces.push_back(&wKing);
@@ -48,6 +51,7 @@ void unit_tests::run_tests()
     pieces.push_back(&bQueen);
     pieces.push_back(&wQueen);
     pieces.push_back(&bBishop);
+    pieces.push_back(&wRook);
 
     sf::RenderWindow window(sf::VideoMode(WINDOW_SIZE, WINDOW_SIZE), "Chesss!");
     board game_board(pieces, window, &mBoard);
@@ -56,12 +60,17 @@ void unit_tests::run_tests()
     // put self in check
     ASSERT_IS_TRUE(!wKing.move(&game_board, 4, 5));
     // bishop moving like a rook
-
     ASSERT_IS_TRUE(!bBishop.move(&game_board, bBishop.x_pos + 1, bBishop.y_pos));
+    ASSERT_IS_TRUE(!bBishop.move(&game_board, bBishop.x_pos, bBishop.y_pos + 1));
+
+    // rook moving like a bishop
+    ASSERT_IS_TRUE(!bBishop.move(&game_board, wRook.x_pos + 1, wRook.y_pos + 1));
+    ASSERT_IS_TRUE(!bBishop.move(&game_board, wRook.x_pos + 1, wRook.y_pos + 1));
 
     // valid moves
     ASSERT_IS_TRUE(wKing.move(&game_board, 4, 6));
     ASSERT_IS_TRUE(wKing.move(&game_board, 3, 7));
     ASSERT_IS_TRUE(wKing.move(&game_board, 5, 7));
     ASSERT_IS_TRUE(bBishop.move(&game_board, 3, 1));
+    ASSERT_IS_TRUE(wRook.move(&game_board, 5, 6));
 }

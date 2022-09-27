@@ -1,7 +1,6 @@
-#include "queen.h"
-#include <cmath>
-queen::queen(sf::Sprite *s, sf::Vector2f v, aliance::Enum a, int value) : piece(s, v, a, piece_type::QUEEN, value) {}
-bool queen::move(board *game_board, int x_move, int y_move)
+#include "rook.h"
+rook::rook(sf::Sprite *s, sf::Vector2f v, aliance::Enum a, int value) : piece(s, v, a, piece_type::ROOK, value) {}
+bool rook::move(board *game_board, int x_move, int y_move)
 {
 	bool valid_move = piece::move(game_board, x_move, y_move);
 	if (!valid_move)
@@ -18,16 +17,6 @@ bool queen::move(board *game_board, int x_move, int y_move)
 		if (diagonal_vector == 0)
 		{
 			valid_move = true;
-		}
-
-		// moving like a bishop
-		else if (abs(x_vector) == abs(y_vector))
-		{
-			valid_move = true;
-		}
-		else
-		{
-			valid_move = false;
 		}
 	}
 	return valid_move;

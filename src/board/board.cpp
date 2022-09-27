@@ -83,6 +83,8 @@ void board::draw_board(std::vector<piece *> pieces)
 }
 std::vector<int> board::get_king_pos(aliance::Enum a)
 {
+    std::vector<int> ret;
+
     for (int i = 0; i < 8; i++)
     {
         for (int j = 0; j < 8; j++)
@@ -92,14 +94,13 @@ std::vector<int> board::get_king_pos(aliance::Enum a)
                 piece *p = game_board[i][j];
                 if (p->aliance == a && p->piece_type == piece_type::Enum::KING)
                 {
-                    std::vector<int> ret;
                     // x
                     ret.push_back(i);
                     // y
                     ret.push_back(j);
-                    return ret;
                 }
             }
         }
     }
+    return ret;
 }

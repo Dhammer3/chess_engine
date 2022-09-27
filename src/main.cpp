@@ -2,6 +2,7 @@
 #include "king.h"
 #include "queen.h"
 #include "bishop.h"
+#include "rook.h"
 #include "unit_tests.h" //todo fix in the cmake
 #include <SFML/Graphics.hpp>
 using namespace sf;
@@ -37,6 +38,7 @@ int main()
 	s3.setTexture(t3);
 	s4.setTexture(t4);
 	s9.setTexture(t9);
+	s11.setTexture(t11);
 
 	int init_x, init_y, move_x, move_y, index;
 	bool flag;
@@ -44,25 +46,26 @@ int main()
 	king wKing(&s1, scale, aliance::WHITE);
 	king bKing(&s2, scale, aliance::BLACK);
 
-	queen wQueen(&s3, scale, aliance::WHITE);
-	queen bQueen(&s4, scale, aliance::BLACK);
-
-	bishop bBishop(&s9, scale, aliance::BLACK);
+	// queen wQueen(&s3, scale, aliance::WHITE);
+	// queen bQueen(&s4, scale, aliance::BLACK);
+	// bishop bBishop(&s9, scale, aliance::BLACK);
+	rook bRook(&s11, scale, aliance::BLACK);
 
 	wKing.set_position(4, 7);
-	bKing.set_position(1, 7);
+	bKing.set_position(4, 0);
 
-	bQueen.set_position(0, 0);
-	bQueen.set_position(0, 1);
-
-	bBishop.set_position(4, 0);
+	// bQueen.set_position(0, 0);
+	// bQueen.set_position(0, 1);
+	bRook.set_position(7, 0);
+	// wRook.set_position(6, 7);
 
 	std::vector<piece *> pieces;
 	pieces.push_back(&wKing);
 	pieces.push_back(&bKing);
-	pieces.push_back(&bQueen);
-	pieces.push_back(&wQueen);
-	pieces.push_back(&bBishop);
+	// pieces.push_back(&bQueen);
+	// pieces.push_back(&wQueen);
+	// pieces.push_back(&bBishop);
+	pieces.push_back(&bRook);
 
 	board game_board(pieces, window, &mBoard);
 
