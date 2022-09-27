@@ -3,6 +3,8 @@
 #include "queen.h"
 #include "bishop.h"
 #include "rook.h"
+#include "pawn.h"
+
 #include "unit_tests.h" //todo fix in the cmake
 #include <SFML/Graphics.hpp>
 using namespace sf;
@@ -39,6 +41,7 @@ int main()
 	s4.setTexture(t4);
 	s9.setTexture(t9);
 	s11.setTexture(t11);
+	s6.setTexture(t6);
 
 	int init_x, init_y, move_x, move_y, index;
 	bool flag;
@@ -49,23 +52,25 @@ int main()
 	// queen wQueen(&s3, scale, aliance::WHITE);
 	// queen bQueen(&s4, scale, aliance::BLACK);
 	// bishop bBishop(&s9, scale, aliance::BLACK);
-	rook bRook(&s11, scale, aliance::BLACK);
+	pawn bPawn(&s6, scale, aliance::BLACK);
 
 	wKing.set_position(4, 7);
 	bKing.set_position(4, 0);
 
 	// bQueen.set_position(0, 0);
 	// bQueen.set_position(0, 1);
-	bRook.set_position(7, 0);
+	bPawn.set_position(7, 1);
 	// wRook.set_position(6, 7);
 
 	std::vector<piece *> pieces;
 	pieces.push_back(&wKing);
 	pieces.push_back(&bKing);
+	pieces.push_back(&bPawn);
+
 	// pieces.push_back(&bQueen);
 	// pieces.push_back(&wQueen);
 	// pieces.push_back(&bBishop);
-	pieces.push_back(&bRook);
+	// pieces.push_back(&bRook);
 
 	board game_board(pieces, window, &mBoard);
 
