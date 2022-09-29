@@ -14,9 +14,13 @@ bool rook::move(board *game_board, int x_move, int y_move)
 	if (x_vector != 0 || y_vector != 0)
 	{
 		// moving like a rook
-		if (diagonal_vector == 0)
+		if (x_vector == 0 || y_vector == 0)
 		{
 			valid_move = true;
+		}
+		else
+		{
+			valid_move = false;
 		}
 	}
 	return valid_move;

@@ -1,2 +1,2 @@
-add_library(piece piece.cpp king.cpp queen.cpp bishop.cpp rook.cpp pawn.cpp knight.cpp)
+add_library(piece piece.cpp king.cpp queen.cpp bishop.cpp rook.cpp pawn.cpp knight.cpp piece_factory.cpp)
 

@@ -1,4 +1,5 @@
 #include "piece.h"
+#include "../board/board.h"
 #include <cmath>
 piece::piece(sf::Sprite *image, sf::Vector2f scale, aliance::Enum a, piece_type::Enum pt, int value)
 {
@@ -15,6 +16,10 @@ piece::piece(sf::Sprite *image, sf::Vector2f scale, aliance::Enum a, piece_type:
 
 bool piece::move(board *game_board, int x_move, int y_move)
 {
+	if (x_move < 0 || x_move > 7 || y_move < 0 || y_move > 7)
+	{
+		return false;
+	}
 	bool in_check = false;
 	bool valid_move = true;
 	std::vector<int> king_pos = game_board->get_king_pos(this->aliance);
@@ -71,7 +76,9 @@ bool piece::is_castling(board *game_board, int x_move, int y_move)
 }
 void piece::set_position(int x, int y)
 {
+
 	this->image->setPosition(x * SQUARE_SIZE + OFFSET, y * SQUARE_SIZE + OFFSET);
+
 	this->x_pos = x;
 	this->y_pos = y;
 }
