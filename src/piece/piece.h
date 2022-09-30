@@ -11,6 +11,7 @@ class piece : sf::Sprite
 public:
 	piece() {}
 	piece(sf::Sprite *image, sf::Vector2f scale, aliance::Enum a, piece_type::Enum pt, int value);
+	~piece() {}
 	virtual bool move(board *game_board, int x_pos, int y_pos);
 	int value;
 	int x_pos, y_pos, move_counter;

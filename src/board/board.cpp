@@ -4,7 +4,7 @@ board::board(std::vector<piece *> pieces, sf::RenderWindow &window, sf::Sprite *
     this->set_board(pieces);
     this->window = &window;
     this->board_image = image;
-    // this->pieces
+    this->pieces = pieces;
 };
 void board::clear_board()
 {
@@ -61,6 +61,11 @@ void board::draw_board(std::vector<piece *> pieces)
     }
 
     this->window->display();
+}
+void board::remove_piece(piece *p)
+{
+    this->pieces.erase(find(this->pieces.begin(), this->pieces.end(), p));
+    this->set_board(pieces);
 }
 std::vector<int> board::get_king_pos(aliance::Enum a)
 {

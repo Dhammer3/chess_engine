@@ -12,6 +12,7 @@ public:
 	board(std::vector<piece *> pieces, sf::RenderWindow &window, sf::Sprite *image);
 	sf::RenderWindow *window;
 	sf::Sprite *board_image;
+	std::vector<piece *> pieces;
 	piece *game_board[8][8];
 	piece *(*get_board())[8];
 	void clear_board();
@@ -19,6 +20,7 @@ public:
 	bool piece_in_location(int x, int y);
 	bool capturing_own_piece(aliance::Enum a, int x, int y);
 	void draw_board(std::vector<piece *> pieces);
+	void remove_piece(piece *p);
 	bool in_check(aliance::Enum a, int kingX, int kingY);
 
 	std::vector<int> get_king_pos(aliance::Enum a);

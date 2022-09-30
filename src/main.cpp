@@ -27,7 +27,6 @@ int main()
 
 	std::vector<piece *> pieces = piece_factory.get_pieces();
 
-	std::cout << pieces[0]->value << std::endl;
 	window.draw(mBoard);
 	board game_board(pieces, window, &mBoard);
 
@@ -49,9 +48,9 @@ int main()
 					init_y = static_cast<int>(mouse_pos.y / SQUARE_SIZE);
 
 					// selected a piece
-					for (int i = 0; i < pieces.size(); i++)
+					for (int i = 0; i < game_board.pieces.size(); i++)
 					{
-						if (init_x == pieces[i]->x_pos && init_y == pieces[i]->y_pos)
+						if (init_x == game_board.pieces[i]->x_pos && init_y == game_board.pieces[i]->y_pos)
 						{
 							flag = true;
 							index = i;
@@ -67,16 +66,29 @@ int main()
 				if (flag)
 				{
 					flag = !flag;
-					if (pieces[index]->move(&game_board, move_x, move_y))
+					if (game_board.pieces[index]->move(&game_board, move_x, move_y))
 					{
-						pieces[index]->set_position(move_x, move_y);
-						pieces[index]->increment_move_counter();
+						if (game_board.game_board[move_x][move_y])
+						{
+							//
+
+							game_board.pieces[index]->set_position(move_x, move_y);
+
+							game_board.pieces[index]->increment_move_counter();
+							game_board.remove_piece(game_board.game_board[move_x][move_y]);
+						}
+						else
+						{
+							game_board.pieces[index]->set_position(move_x, move_y);
+							game_board.pieces[index]->increment_move_counter();
+						}
+
+						// if capturing a piece
 					}
 				}
 			}
+			game_board.draw_board(game_board.pieces);
 		}
-
-		game_board.draw_board(pieces);
 	}
 
 	return 0;
