@@ -19,6 +19,7 @@ public:
 	void set_board(std::vector<piece *> pieces);
 	bool piece_in_location(int x, int y);
 	bool capturing_own_piece(aliance::Enum a, int x, int y);
+	bool capturing_king(int x, int y);
 	void draw_board(std::vector<piece *> pieces);
 	void remove_piece(piece *p);
 	bool in_check(aliance::Enum a, int kingX, int kingY);

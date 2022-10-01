@@ -41,8 +41,9 @@ bool piece::move(board *game_board, int x_move, int y_move)
 	// if they are in check after the move, they cannot make that move.
 	bool piece_in_way = this->piece_in_way(game_board, x_move, y_move);
 	bool capturing_own_piece = game_board->capturing_own_piece(this->aliance, x_move, y_move);
+	bool capturing_king = game_board->capturing_king(x_move, y_move);
 
-	if (capturing_own_piece || in_check || piece_in_way)
+	if (capturing_own_piece || in_check || piece_in_way || capturing_king)
 	{
 		valid_move = false;
 	}

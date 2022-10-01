@@ -38,6 +38,14 @@ bool board::capturing_own_piece(aliance::Enum a, int x, int y)
     }
     return false;
 }
+bool board::capturing_king(int x, int y)
+{
+    if (piece_in_location(x, y))
+    {
+        return this->game_board[x][y]->piece_type == piece_type::KING;
+    }
+    return false;
+}
 
 void board::draw_board(std::vector<piece *> pieces)
 {
