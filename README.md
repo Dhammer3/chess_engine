@@ -2,7 +2,7 @@
 cpp chess engine
 # Steps to use:
 1) clone the repo
-1) ```cd chess_engine/```
+1) ```cd src/```
 1) ```mkdir build```
 1) ```cd build```
 1) ```cmake .. .```
