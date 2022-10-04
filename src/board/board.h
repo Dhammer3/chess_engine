@@ -1,6 +1,6 @@
 #if !defined(__BOARD_H__)
 #define __BOARD_H__
-#include "../piece/piece.h"
+#include "piece.h"
 const int OFFSET = -2;
 const int WINDOW_SIZE = 455;
 const float SQUARE_SIZE = WINDOW_SIZE / 8;

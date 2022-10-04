@@ -4,7 +4,7 @@
 #include "piece_type.hpp"
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include "../board/board.h"
+#include "board.h"
 class board;
 class piece : sf::Sprite
 {

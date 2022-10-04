@@ -1,18 +1,9 @@
 #include <iostream>
-#include "king.h"
-#include "queen.h"
-#include "bishop.h"
-#include "rook.h"
-#include "pawn.h"
-#include "knight.h"
 #include "piece_factory.h"
 
-#include "unit_tests.h"
 #include <SFML/Graphics.hpp>
 int main()
 {
-	unit_tests a;
-	a.run_tests();
 	sf::Texture t0;
 	sf::Sprite mBoard;
 	t0.loadFromFile("../images/board0.png");
