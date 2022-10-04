@@ -23,6 +23,10 @@ bool pawn::move(board *game_board, int x_move, int y_move)
 	{
 		return false;
 	}
+	if (y_squared == 1 && x_squared == 0 && game_board->piece_in_location(x_move, y_move))
+	{
+		valid_move = false;
+	}
 	if (x_squared + y_squared >= 2)
 	{
 

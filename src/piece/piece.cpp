@@ -16,6 +16,7 @@ piece::piece(sf::Sprite *image, sf::Vector2f scale, aliance::Enum a, piece_type:
 
 bool piece::move(board *game_board, int x_move, int y_move)
 {
+
 	if (x_move < 0 || x_move > 7 || y_move < 0 || y_move > 7)
 	{
 		return false;
@@ -35,6 +36,7 @@ bool piece::move(board *game_board, int x_move, int y_move)
 		game_board_copy->game_board[this->x_pos][this->y_pos] = NULL;
 		game_board_copy->game_board[king_x][king_y] = NULL;
 		game_board_copy->game_board[x_move][y_move] = this;
+
 		in_check = this->put_self_in_check(game_board_copy, x_move, y_move, king_x, king_y);
 	}
 
@@ -42,7 +44,6 @@ bool piece::move(board *game_board, int x_move, int y_move)
 	bool piece_in_way = this->piece_in_way(game_board, x_move, y_move);
 	bool capturing_own_piece = game_board->capturing_own_piece(this->aliance, x_move, y_move);
 	bool capturing_king = game_board->capturing_king(x_move, y_move);
-
 	if (capturing_own_piece || in_check || piece_in_way || capturing_king)
 	{
 		valid_move = false;
@@ -75,6 +76,7 @@ bool piece::is_castling(board *game_board, int x_move, int y_move)
 
 	return is_castling;
 }
+
 void piece::set_position(int x, int y)
 {
 
@@ -111,6 +113,7 @@ bool piece::put_self_in_check(board *board, int x_move, int y_move, int king_x, 
 						// the king is moving, check the spot it is moving to to see if it can move there.
 						if (this->piece_type == piece_type::KING)
 						{
+							board->game_board[x_move][y_move] = NULL;
 							enemy_piece_can_move = p->move(board, x_move, y_move);
 						}
 						// if different piece is moving, check to see if any enemies can move to the kings position.

@@ -22,7 +22,9 @@ public:
 	bool capturing_king(int x, int y);
 	void draw_board(std::vector<piece *> pieces);
 	void remove_piece(piece *p);
-	bool in_check(aliance::Enum a, int kingX, int kingY);
+	bool checkmate(aliance::Enum a);
+	bool in_check(aliance::Enum a, int kingX, int kingY); // refactor?
+	bool in_checkmate(aliance::Enum);
 
 	std::vector<int> get_king_pos(aliance::Enum a);
 };

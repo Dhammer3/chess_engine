@@ -98,3 +98,28 @@ std::vector<int> board::get_king_pos(aliance::Enum a)
     }
     return ret;
 }
+// returns true if aliance is in checkmate
+bool board::checkmate(aliance::Enum a)
+{
+
+    bool checkmate = true;
+    for (int i = 0; i < this->pieces.size(); i++)
+    {
+        piece *p = this->pieces[i];
+        if (p->aliance == a)
+        {
+            for (int x = 0; x < 8; x++)
+            {
+                for (int y = 0; y < 8; y++)
+                {
+                    if (p->move(this, x, y))
+                    {
+                        checkmate = false;
+                        return checkmate;
+                    }
+                }
+            }
+        }
+    }
+    return checkmate;
+}
