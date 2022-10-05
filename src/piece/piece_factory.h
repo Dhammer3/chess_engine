@@ -4,11 +4,11 @@
 class piece_factory
 {
 public:
+    piece_factory(){};
     piece_factory(sf::Vector2f scale);
     std::vector<piece *> get_pieces();
     sf::Vector2f scale;
     std::vector<piece *> pieces;
 
-protected:
     piece *make_piece(aliance::Enum a, piece_type::Enum p);
 };

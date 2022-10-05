@@ -1,5 +1,6 @@
 #include "piece.h"
 #include "../board/board.h"
+#include "piece_factory.h"
 #include <cmath>
 piece::piece(sf::Sprite *image, sf::Vector2f scale, aliance::Enum a, piece_type::Enum pt, int value)
 {
@@ -33,8 +34,9 @@ bool piece::move(board *game_board, int x_move, int y_move)
 	// make the mock move and set the king pos to empty
 	if (!null_king_pos)
 	{
+		piece_factory *pf = new piece_factory();
 		game_board_copy->game_board[this->x_pos][this->y_pos] = NULL;
-		game_board_copy->game_board[king_x][king_y] = NULL;
+		game_board_copy->game_board[king_x][king_y] = pf->make_piece(this->aliance, piece_type::PAWN);
 		game_board_copy->game_board[x_move][y_move] = this;
 
 		in_check = this->put_self_in_check(game_board_copy, x_move, y_move, king_x, king_y);
