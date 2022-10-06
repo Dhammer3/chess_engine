@@ -22,7 +22,7 @@ public:
 	bool is_castling(board *game_board, int x_move, int y_move);
 
 	void increment_move_counter();
-	bool put_self_in_check(board *game_board, int x_move, int y_move, int king_x, int king_y);
+	bool put_self_in_check(board *game_board, int x_move, int y_move, int king_x, int king_y); // refactor this
 	bool enemy_piece(piece *p);
 	int x_vector(int x_move);
 	int y_vector(int y_move);

@@ -2,6 +2,7 @@
 #include "../board/board.h"
 #include "piece_factory.h"
 #include <cmath>
+bool putting_self_in_check = false;
 piece::piece(sf::Sprite *image, sf::Vector2f scale, aliance::Enum a, piece_type::Enum pt, int value)
 {
 	this->value = value;
@@ -34,12 +35,12 @@ bool piece::move(board *game_board, int x_move, int y_move)
 	// make the mock move and set the king pos to empty
 	if (!null_king_pos)
 	{
-		piece_factory *pf = new piece_factory();
 		game_board_copy->game_board[this->x_pos][this->y_pos] = NULL;
-		game_board_copy->game_board[king_x][king_y] = pf->make_piece(this->aliance, piece_type::PAWN);
+		game_board_copy->game_board[king_x][king_y] = NULL;
 		game_board_copy->game_board[x_move][y_move] = this;
 
 		in_check = this->put_self_in_check(game_board_copy, x_move, y_move, king_x, king_y);
+		putting_self_in_check = false;
 	}
 
 	// if they are in check after the move, they cannot make that move.
@@ -95,7 +96,11 @@ void piece::increment_move_counter()
 
 bool piece::put_self_in_check(board *board, int x_move, int y_move, int king_x, int king_y)
 {
-
+	piece_factory *pf = new piece_factory();
+	if (putting_self_in_check)
+	{
+		return true;
+	}
 	static int recursion_counter = 0;
 	bool enemy_piece_can_move = false;
 	if (recursion_counter == 0)
@@ -115,15 +120,15 @@ bool piece::put_self_in_check(board *board, int x_move, int y_move, int king_x, 
 						// the king is moving, check the spot it is moving to to see if it can move there.
 						if (this->piece_type == piece_type::KING)
 						{
-							board->game_board[x_move][y_move] = NULL;
-							enemy_piece_can_move = p->move(board, x_move, y_move);
+							board->game_board[x_move][y_move] = pf->make_piece(this->aliance, piece_type::PAWN);
+							putting_self_in_check = p->move(board, x_move, y_move);
 						}
 						// if different piece is moving, check to see if any enemies can move to the kings position.
 						else
 						{
-							enemy_piece_can_move = p->move(board, king_x, king_y);
+							putting_self_in_check = p->move(board, king_x, king_y);
 						}
-						if (enemy_piece_can_move)
+						if (putting_self_in_check)
 						{
 							std::cout << "cant put yourself in check!" << std::endl;
 							return true;

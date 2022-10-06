@@ -73,11 +73,6 @@ int main()
 							game_board.pieces[index]->set_position(move_x, move_y);
 							game_board.pieces[index]->increment_move_counter();
 						}
-						bool white_wins = game_board.checkmate(aliance::BLACK);
-						if (white_wins)
-						{
-							std::cout << "WHITE WINS" << std::endl;
-						}
 					}
 				}
 			}
