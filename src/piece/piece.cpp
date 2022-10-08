@@ -2,7 +2,10 @@
 #include "../board/board.h"
 #include "piece_factory.h"
 #include <cmath>
+#include <thread>
+#include <future>
 bool putting_self_in_check = false;
+int recursion_counter = 0;
 piece::piece(sf::Sprite *image, sf::Vector2f scale, aliance::Enum a, piece_type::Enum pt, int value)
 {
 	this->value = value;
@@ -58,26 +61,26 @@ bool piece::move(board *game_board, int x_move, int y_move)
 bool piece::is_castling(board *game_board, int x_move, int y_move)
 {
 
-	bool is_castling = false;
-	bool two_space_x_move = abs(this->x_vector(x_move)) == 2;
-	bool no_y_move = y_move == this->y_pos;
-	bool first_move = this->move_counter == 0;
-	int rook_x = this->x_vector(x_move) > 0 ? x_move - 2 : x_move + 1;
-	bool is_piece = (game_board->game_board[rook_x][y_move]);
-	piece rook;
-	bool rook_can_castle = false;
-	bool king_can_castle = two_space_x_move && no_y_move && first_move && !this->piece_in_way(game_board, rook_x, y_move);
-	if (is_piece)
-	{
-		rook = *game_board->game_board[rook_x][y_move];
-		rook_can_castle = rook.piece_type == piece_type::ROOK && rook.aliance == this->aliance && rook.move_counter == 0;
-	}
-	if (rook_can_castle && king_can_castle)
-	{
-		is_castling = true;
-	}
+	// bool is_castling = false;
+	// bool two_space_x_move = abs(this->x_vector(x_move)) == 2;
+	// bool no_y_move = y_move == this->y_pos;
+	// bool first_move = this->move_counter == 0;
+	// int rook_x = this->x_vector(x_move) > 0 ? x_move - 2 : x_move + 1;
+	// bool is_piece = game_board->piece_in_location(rook_x, y_move);
+	// bool rook_can_castle = false;
+	// bool king_can_castle = two_space_x_move && no_y_move && first_move && !this->piece_in_way(game_board, rook_x, y_move);
+	// if (is_piece)
+	// {
+	// 	piece *rook = game_board->game_board[rook_x][y_move];
+	// 	rook_can_castle = rook->piece_type == piece_type::ROOK && rook->aliance == this->aliance && rook->move_counter == 0;
+	// }
+	// if (rook_can_castle && king_can_castle)
+	// {
+	bool is_castling = true;
+	// }
 
-	return is_castling;
+	// return is_castling;
+	return false;
 }
 
 void piece::set_position(int x, int y)
@@ -97,11 +100,15 @@ void piece::increment_move_counter()
 bool piece::put_self_in_check(board *board, int x_move, int y_move, int king_x, int king_y)
 {
 	piece_factory *pf = new piece_factory();
+	piece *p = new piece();
+	static int recursion_counter = 0;
+
 	if (putting_self_in_check)
 	{
+		recursion_counter = 0;
+
 		return true;
 	}
-	static int recursion_counter = 0;
 	bool enemy_piece_can_move = false;
 	if (recursion_counter == 0)
 	{
@@ -113,7 +120,7 @@ bool piece::put_self_in_check(board *board, int x_move, int y_move, int king_x, 
 				if (board->game_board[i][j])
 				{
 
-					piece *p = board->game_board[i][j];
+					p = board->game_board[i][j];
 					if (enemy_piece(p))
 					{
 						recursion_counter += 1;
@@ -121,16 +128,20 @@ bool piece::put_self_in_check(board *board, int x_move, int y_move, int king_x, 
 						if (this->piece_type == piece_type::KING)
 						{
 							board->game_board[x_move][y_move] = pf->make_piece(this->aliance, piece_type::PAWN);
-							putting_self_in_check = p->move(board, x_move, y_move);
+							// auto chkmt = std::async(&piece::mo, this, x_move, y_move);
+							auto can_move = std::async(&piece::move, p, board, x_move, y_move);
+							putting_self_in_check = can_move.get();
 						}
 						// if different piece is moving, check to see if any enemies can move to the kings position.
 						else
 						{
+
 							putting_self_in_check = p->move(board, king_x, king_y);
 						}
 						if (putting_self_in_check)
 						{
-							std::cout << "cant put yourself in check!" << std::endl;
+							recursion_counter = 0;
+
 							return true;
 						}
 					}
@@ -139,7 +150,7 @@ bool piece::put_self_in_check(board *board, int x_move, int y_move, int king_x, 
 		}
 	}
 	recursion_counter = 0;
-	return enemy_piece_can_move;
+	return false;
 }
 
 bool piece::enemy_piece(piece *p)

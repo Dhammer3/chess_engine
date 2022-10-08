@@ -1,4 +1,6 @@
 #include "board.h"
+#include <thread>
+#include <future>
 board::board(std::vector<piece *> pieces, sf::RenderWindow &window, sf::Sprite *image)
 {
     this->set_board(pieces);
@@ -6,6 +8,12 @@ board::board(std::vector<piece *> pieces, sf::RenderWindow &window, sf::Sprite *
     this->board_image = image;
     this->pieces = pieces;
 };
+board::board(std::vector<piece *> pieces)
+{
+    this->set_board(pieces);
+    this->pieces = pieces;
+};
+
 void board::clear_board()
 {
     for (int i = 0; i < 8; i++)
@@ -28,8 +36,17 @@ void board::set_board(std::vector<piece *> pieces)
 }
 bool board::piece_in_location(int x, int y)
 {
-    return this->game_board[x][y] != 0;
+    return this->game_board[x][y] != NULL;
 }
+piece *board::get_piece(int x, int y)
+{
+    if (piece_in_location(x, y))
+    {
+        return this->game_board[x][y];
+    }
+}
+#include <thread>
+#include <future>
 bool board::capturing_own_piece(aliance::Enum a, int x, int y)
 {
     if (piece_in_location(x, y))
@@ -101,25 +118,61 @@ std::vector<int> board::get_king_pos(aliance::Enum a)
 // returns true if aliance is in checkmate
 bool board::checkmate(aliance::Enum a)
 {
+    int split_size = 4;
+    // std::vector<std::thread> threads(split_size);
 
-    bool checkmate = true;
-    for (int i = 0; i < this->pieces.size(); i++)
+    bool checkmate = false;
+    int exec_count = 0;
+    piece *p = new piece();
+    std::size_t const split = this->pieces.size() / split_size;
+
+    // split the pieces vector into split_size sized smaller vectors to avoid segmentation fault
+    for (int n = 0; n < split_size - 1; n++)
     {
-        piece *p = this->pieces[i];
+        std::vector<piece *> split_pieces(this->pieces.begin() + n * split, this->pieces.begin() + (n + 1) * split);
+        // checkmate = std::thread(checkmate_helper, split_pieces, a);
+        // std::thread t1 = std::thread(&board::checkmate_helper, this, split_pieces, a);
+        auto chkmt = std::async(&board::checkmate_helper, this, split_pieces, a);
+        if (chkmt.get())
+        {
+            return true;
+        }
+    }
+
+    return checkmate;
+}
+
+bool board::checkmate_helper(std::vector<piece *> pieces, aliance::Enum a)
+{
+    // std::cout << "------launching thread..." << std::endl;
+    int exec_count = 0;
+    bool checkmate = false;
+
+    piece *p = new piece();
+    std::vector<int> king_pos = this->get_king_pos(a);
+    bool null_king_pos = king_pos.empty();
+    int &king_x = king_pos[0];
+    int &king_y = king_pos[1];
+    p = this->game_board[king_x][king_y];
+
+    for (int i = 0; i < pieces.size(); i++)
+    {
+        p = pieces[i];
         if (p->aliance == a)
         {
             for (int x = 0; x < 8; x++)
             {
                 for (int y = 0; y < 8; y++)
                 {
-                    if (p->move(this, x, y))
-                    {
-                        checkmate = false;
-                        return checkmate;
-                    }
+                    auto can_move = std::async(&piece::move, p, this, x, y);
+                    // std::cout << "****finished thread..." << std::endl;
+                    // std::cout << "------------------------------" << std::endl;
+
+                    return can_move.get();
                 }
             }
         }
     }
+
     return checkmate;
 }

@@ -1,6 +1,6 @@
 #include <iostream>
 #include "piece_factory.h"
-
+#include "unit_tests.h"
 #include <SFML/Graphics.hpp>
 int main()
 {
@@ -9,17 +9,23 @@ int main()
 	t0.loadFromFile("../images/board0.png");
 	mBoard.setTexture(t0);
 	sf::RenderWindow window(sf::VideoMode(WINDOW_SIZE, WINDOW_SIZE), "Chesss!");
+	window.draw(mBoard);
 
 	sf::Vector2f scale = mBoard.getScale();
-	piece_factory piece_factory(scale);
+	piece_factory pf(scale);
+	piece_factory test_pf(scale);
 
-	int init_x, init_y, move_x, move_y, index;
-	bool flag;
+	int init_x, init_y, move_x, move_y;
+	bool selected_a_piece;
+	piece *selected_piece;
 
-	std::vector<piece *> pieces = piece_factory.get_pieces();
+	std::vector<piece *> pieces = pf.get_pieces();
 
-	window.draw(mBoard);
-	board game_board(pieces, window, &mBoard);
+	board gb(pieces, window, &mBoard);
+
+	unit_tests ut(pf);
+	ut.run_all_tests();
+	gb.draw_board(gb.pieces);
 
 	while (window.isOpen())
 	{
@@ -34,18 +40,17 @@ int main()
 			{
 				if (event.mouseButton.button == sf::Mouse::Left)
 				{
+
 					sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
 					init_x = static_cast<int>(mouse_pos.x / SQUARE_SIZE);
 					init_y = static_cast<int>(mouse_pos.y / SQUARE_SIZE);
 
 					// selected a piece
-					for (int i = 0; i < game_board.pieces.size(); i++)
+
+					if (gb.piece_in_location(init_x, init_y))
 					{
-						if (init_x == game_board.pieces[i]->x_pos && init_y == game_board.pieces[i]->y_pos)
-						{
-							flag = true;
-							index = i;
-						}
+						selected_piece = gb.get_piece(init_x, init_y);
+						selected_a_piece = true;
 					}
 				}
 			}
@@ -54,29 +59,39 @@ int main()
 				sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
 				move_x = static_cast<int>(mouse_pos.x / SQUARE_SIZE);
 				move_y = static_cast<int>(mouse_pos.y / SQUARE_SIZE);
-				if (flag)
+				if (selected_a_piece)
 				{
-					flag = !flag;
-					if (game_board.pieces[index]->move(&game_board, move_x, move_y))
+					selected_a_piece = false;
+					if (selected_piece->move(&gb, move_x, move_y))
 					{
-						if (game_board.game_board[move_x][move_y])
+						if (gb.game_board[move_x][move_y])
 						{
-							//
-
-							game_board.pieces[index]->set_position(move_x, move_y);
-
-							game_board.pieces[index]->increment_move_counter();
-							game_board.remove_piece(game_board.game_board[move_x][move_y]);
+							selected_piece->set_position(move_x, move_y);
+							selected_piece->increment_move_counter();
+							gb.remove_piece(gb.game_board[move_x][move_y]);
 						}
 						else
 						{
-							game_board.pieces[index]->set_position(move_x, move_y);
-							game_board.pieces[index]->increment_move_counter();
+							selected_piece->set_position(move_x, move_y);
+							selected_piece->increment_move_counter();
 						}
+						// if (checkmate)
+						// {
+						// 	std::cout << "WHITE WINS!" << std::endl;
+						// }
+						// else
+						// {
+						// 	std::cout << "WHITE DIDNT WIN!" << std::endl;
+						// }
 					}
 				}
+
+				// checkmate = cp->checkmate(aliance::BLACK);
+
+				board *cp = new board(gb.pieces);
+				bool checkmate = cp->checkmate(aliance::BLACK);
+				gb.draw_board(gb.pieces);
 			}
-			game_board.draw_board(game_board.pieces);
 		}
 	}
 

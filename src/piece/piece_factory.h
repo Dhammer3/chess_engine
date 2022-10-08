@@ -1,3 +1,5 @@
+#if !defined(__PIECE_FACTORY_H__)
+#define __PIECE_FACTORY_H__
 #include "piece.h"
 #include <SFML/Graphics.hpp>
 // This class builds the pieces
@@ -12,3 +14,4 @@ public:
 
     piece *make_piece(aliance::Enum a, piece_type::Enum p);
 };
+#endif

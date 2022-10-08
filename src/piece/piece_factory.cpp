@@ -159,8 +159,6 @@ piece_factory::piece_factory(sf::Vector2f scale)
     pieces.push_back(wPawn6);
     pieces.push_back(wPawn7);
 
-        std::cout << &pieces[0]->aliance << std::endl;
-
     this->pieces = pieces;
 };
 piece *piece_factory::make_piece(aliance::Enum aliance, piece_type::Enum piece_type)

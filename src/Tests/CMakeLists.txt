@@ -5,8 +5,9 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(SFML)
 add_library(Tests unit_tests.cpp)
-target_include_directories(board
+target_include_directories(Tests
  PUBLIC
+  PUBLIC ${CMAKE_SOURCE_DIR}/board/
   PUBLIC ${CMAKE_SOURCE_DIR}/piece/
   )
-target_link_libraries( Tests piece sfml-graphics) 
+target_link_libraries( Tests board piece sfml-graphics) 
