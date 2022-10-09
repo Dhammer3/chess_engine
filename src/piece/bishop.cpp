@@ -3,8 +3,8 @@
 bishop::bishop(sf::Sprite *s, sf::Vector2f v, aliance::Enum a, int value) : piece(s, v, a, piece_type::BISHOP, value) {}
 bool bishop::move(board *game_board, coordinates m)
 {
-	bool valid_coordinates = piece::move(game_board, m);
-	if (!valid_coordinates)
+	bool valid_move = piece::move(game_board, m);
+	if (!valid_move)
 	{
 		return false;
 	}
@@ -16,12 +16,12 @@ bool bishop::move(board *game_board, coordinates m)
 	{
 		if (abs(x_vector) == abs(y_vector))
 		{
-			valid_coordinates = true;
+			valid_move = true;
 		}
 		else
 		{
-			valid_coordinates = false;
+			valid_move = false;
 		}
 	}
-	return valid_coordinates;
+	return valid_move;
 }

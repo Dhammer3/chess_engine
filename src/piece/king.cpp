@@ -3,8 +3,8 @@
 king::king(sf::Sprite *s, sf::Vector2f v, aliance::Enum a, int value) : piece(s, v, a, piece_type::KING, value) {}
 bool king::move(board *game_board, coordinates m)
 {
-	bool valid_coordinates = piece::move(game_board, m);
-	if (!valid_coordinates)
+	bool valid_move = piece::move(game_board, m);
+	if (!valid_move)
 	{
 
 		return false;
@@ -18,7 +18,7 @@ bool king::move(board *game_board, coordinates m)
 	{
 		// if (this->is_castling(game_board, m))
 		// {
-		// 	valid_coordinates = true;
+		// 	valid_move = true;
 		// 	int rook_x = this->x_vector(m.get_x() m) > 0 ? m.get_x() - 2 : m.get_x()  + 1;
 		// 	int rook_m.get_x() m = this->x_vector(m.get_x()) > 0 ? m.get_x() + 1 : m.get_x()  - 1;
 		// 	// coordinates the rook
@@ -27,11 +27,11 @@ bool king::move(board *game_board, coordinates m)
 		// }
 		// else
 		// {
-		valid_coordinates = false;
+		valid_move = false;
 		// }
 	}
 
 	//! todo
 
-	return valid_coordinates;
+	return valid_move;
 }

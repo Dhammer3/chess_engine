@@ -24,7 +24,7 @@ bool piece::move(board *game_board, coordinates m)
 		return false;
 	}
 	bool in_check = false;
-	bool valid_coordinates = true;
+	bool valid_move = true;
 	std::vector<int> king_pos = game_board->get_king_pos(this->aliance);
 	bool null_king_pos = king_pos.empty();
 	int &king_x = king_pos[0];
@@ -50,10 +50,10 @@ bool piece::move(board *game_board, coordinates m)
 	bool capturing_king = game_board->capturing_king(m);
 	if (capturing_own_piece || in_check || piece_in_way || capturing_king)
 	{
-		valid_coordinates = false;
+		valid_move = false;
 	}
 
-	return valid_coordinates;
+	return valid_move;
 }
 // todo
 bool piece::is_castling(board *game_board, coordinates m)

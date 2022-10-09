@@ -2,8 +2,8 @@
 rook::rook(sf::Sprite *s, sf::Vector2f v, aliance::Enum a, int value) : piece(s, v, a, piece_type::ROOK, value) {}
 bool rook::move(board *game_board, coordinates m)
 {
-	bool valid_coordinates = piece::move(game_board, m);
-	if (!valid_coordinates)
+	bool valid_move = piece::move(game_board, m);
+	if (!valid_move)
 	{
 		return false;
 	}
@@ -16,12 +16,12 @@ bool rook::move(board *game_board, coordinates m)
 		// moving like a rook
 		if (x_vector == 0 || y_vector == 0)
 		{
-			valid_coordinates = true;
+			valid_move = true;
 		}
 		else
 		{
-			valid_coordinates = false;
+			valid_move = false;
 		}
 	}
-	return valid_coordinates;
+	return valid_move;
 }
