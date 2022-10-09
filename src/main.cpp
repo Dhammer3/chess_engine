@@ -24,8 +24,8 @@ int main()
 	board gb(pieces, window, &mBoard);
 	coordinates selected_piece_coords, move;
 
-	unit_tests ut(pf);
-	// unit_tests ut(test_pf);
+	// unit_tests ut(pf);
+	unit_tests ut(test_pf);
 
 	ut.run_all_tests();
 	gb.draw_board(gb.pieces);

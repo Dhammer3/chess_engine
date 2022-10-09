@@ -59,26 +59,26 @@ bool piece::move(board *game_board, coordinates m)
 bool piece::is_castling(board *game_board, coordinates m)
 {
 
-	// bool is_castling = false;
-	// bool two_space_m.get_x()m = abs(this->x_vector(m.get_x()m)) == 2;
-	// bool no_m.get_y()m = m.get_y()m == this->y_pos;
-	// bool first_coordinates = this->coordinates_counter == 0;
-	// int rook_x = this->x_vector(m.get_x()m) > 0 ? m.get_x()m - 2 : m.get_x()m + 1;
-	// bool is_piece = game_board->piece_in_location(rook_x, m.get_y()m);
-	// bool rook_can_castle = false;
-	// bool king_can_castle = two_space_m.get_x()m && no_m.get_y()m && first_coordinates && !this->piece_in_way(game_board, rook_x, m.get_y()m);
-	// if (is_piece)
-	// {
-	// 	piece *rook = game_board->game_board[rook_x][m.get_y()m];
-	// 	rook_can_castle = rook->piece_type == piece_type::ROOK && rook->aliance == this->aliance && rook->coordinates_counter == 0;
-	// }
-	// if (rook_can_castle && king_can_castle)
-	// {
-	bool is_castling = true;
-	// }
+	bool is_castling = false;
+	bool two_space_move = abs(this->x_vector(m.get_x())) == 2;
+	bool no_y_move = m.get_y() == this->y_pos;
+	bool first_move = this->coordinates_counter == 0;
+	int rook_x = this->x_vector(m.get_x()) > 0 ? m.get_x() - 2 : m.get_x() + 1;
+	coordinates rook_coords(rook_x, m.get_y());
+	bool is_piece = game_board->piece_in_location(rook_coords);
+	bool rook_can_castle = false;
+	bool king_can_castle = two_space_move && no_y_move && first_move && !this->piece_in_way(game_board, rook_coords);
+	if (is_piece)
+	{
+		piece *rook = game_board->game_board[rook_x][m.get_y()];
+		rook_can_castle = rook->piece_type == piece_type::ROOK && rook->aliance == this->aliance && rook->coordinates_counter == 0;
+	}
+	if (rook_can_castle && king_can_castle)
+	{
+		is_castling = true;
+	}
 
-	// return is_castling;
-	return false;
+	return is_castling;
 }
 
 void piece::set_position(int x, int y)

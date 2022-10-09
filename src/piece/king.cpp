@@ -16,19 +16,20 @@ bool king::move(board *game_board, coordinates m)
 
 	if (x_squared + y_squared > 2)
 	{
-		// if (this->is_castling(game_board, m))
-		// {
-		// 	valid_move = true;
-		// 	int rook_x = this->x_vector(m.get_x() m) > 0 ? m.get_x() - 2 : m.get_x()  + 1;
-		// 	int rook_m.get_x() m = this->x_vector(m.get_x()) > 0 ? m.get_x() + 1 : m.get_x()  - 1;
-		// 	// coordinates the rook
-		// 	game_board->game_board[rook_x][m.get_y() m]->set_position(rook_ coordinates);
-		// 	game_board->game_board[rook_x][m.get_y() m]->increment_coordinates_counter();
-		// }
-		// else
-		// {
-		valid_move = false;
-		// }
+		if (this->is_castling(game_board, m))
+		{
+			valid_move = true;
+			int rook_x = this->x_vector(m.get_x()) > 0 ? m.get_x() - 2 : m.get_x() + 1;
+			int rook_y = m.get_y();
+			coordinates new_rook_coords(rook_x + (diff_x < 0 ? diff_x : diff_x + 1), rook_y);
+			// move the rook
+			game_board->game_board[rook_x][m.get_y()]->set_position(new_rook_coords.get_x(), new_rook_coords.get_y());
+			game_board->game_board[rook_x][m.get_y()]->increment_move_counter();
+		}
+		else
+		{
+			valid_move = false;
+		}
 	}
 
 	//! todo
