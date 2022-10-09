@@ -1,9 +1,6 @@
 #include "piece.h"
 #include "../board/board.h"
-#include "piece_factory.h"
-#include <cmath>
-#include <thread>
-#include <future>
+#include "coordinates.h"
 bool putting_self_in_check = false;
 int recursion_counter = 0;
 piece::piece(sf::Sprite *image, sf::Vector2f scale, aliance::Enum a, piece_type::Enum pt, int value)
@@ -13,66 +10,67 @@ piece::piece(sf::Sprite *image, sf::Vector2f scale, aliance::Enum a, piece_type:
 	this->image->setScale(scale.x / 20, scale.y / 20);
 	this->x_pos = 0;
 	this->y_pos = 0;
-	this->move_counter = 0;
+	this->coordinates_counter = 0;
 	this->aliance = a;
 	this->piece_type = pt;
 }
 // no piece can capture its own piece or put itself in chec
 
-bool piece::move(board *game_board, int x_move, int y_move)
+bool piece::move(board *game_board, coordinates m)
 {
 
-	if (x_move < 0 || x_move > 7 || y_move < 0 || y_move > 7)
+	if (m.get_x() < 0 || m.get_x() > 7 || m.get_y() < 0 || m.get_y() > 7)
 	{
 		return false;
 	}
 	bool in_check = false;
-	bool valid_move = true;
+	bool valid_coordinates = true;
 	std::vector<int> king_pos = game_board->get_king_pos(this->aliance);
 	bool null_king_pos = king_pos.empty();
 	int &king_x = king_pos[0];
 	int &king_y = king_pos[1];
+	coordinates king_position(king_x, king_y);
 	// copy the board
 	board *game_board_copy = new board(*game_board);
 
-	// make the mock move and set the king pos to empty
+	// make the mock coordinates and set the king pos to empty
 	if (!null_king_pos)
 	{
 		game_board_copy->game_board[this->x_pos][this->y_pos] = NULL;
 		game_board_copy->game_board[king_x][king_y] = NULL;
-		game_board_copy->game_board[x_move][y_move] = this;
+		game_board_copy->game_board[m.get_x()][m.get_y()] = this;
 
-		in_check = this->put_self_in_check(game_board_copy, x_move, y_move, king_x, king_y);
+		in_check = this->put_self_in_check(game_board_copy, m, king_position);
 		putting_self_in_check = false;
 	}
 
-	// if they are in check after the move, they cannot make that move.
-	bool piece_in_way = this->piece_in_way(game_board, x_move, y_move);
-	bool capturing_own_piece = game_board->capturing_own_piece(this->aliance, x_move, y_move);
-	bool capturing_king = game_board->capturing_king(x_move, y_move);
+	// if they are in check after the coordinates, they cannot make that coordinates.
+	bool piece_in_way = this->piece_in_way(game_board, m);
+	bool capturing_own_piece = game_board->capturing_own_piece(this->aliance, m.get_x(), m.get_y());
+	bool capturing_king = game_board->capturing_king(m.get_x(), m.get_y());
 	if (capturing_own_piece || in_check || piece_in_way || capturing_king)
 	{
-		valid_move = false;
+		valid_coordinates = false;
 	}
 
-	return valid_move;
+	return valid_coordinates;
 }
 // todo
-bool piece::is_castling(board *game_board, int x_move, int y_move)
+bool piece::is_castling(board *game_board, coordinates m)
 {
 
 	// bool is_castling = false;
-	// bool two_space_x_move = abs(this->x_vector(x_move)) == 2;
-	// bool no_y_move = y_move == this->y_pos;
-	// bool first_move = this->move_counter == 0;
-	// int rook_x = this->x_vector(x_move) > 0 ? x_move - 2 : x_move + 1;
-	// bool is_piece = game_board->piece_in_location(rook_x, y_move);
+	// bool two_space_m.get_x()m = abs(this->x_vector(m.get_x()m)) == 2;
+	// bool no_m.get_y()m = m.get_y()m == this->y_pos;
+	// bool first_coordinates = this->coordinates_counter == 0;
+	// int rook_x = this->x_vector(m.get_x()m) > 0 ? m.get_x()m - 2 : m.get_x()m + 1;
+	// bool is_piece = game_board->piece_in_location(rook_x, m.get_y()m);
 	// bool rook_can_castle = false;
-	// bool king_can_castle = two_space_x_move && no_y_move && first_move && !this->piece_in_way(game_board, rook_x, y_move);
+	// bool king_can_castle = two_space_m.get_x()m && no_m.get_y()m && first_coordinates && !this->piece_in_way(game_board, rook_x, m.get_y()m);
 	// if (is_piece)
 	// {
-	// 	piece *rook = game_board->game_board[rook_x][y_move];
-	// 	rook_can_castle = rook->piece_type == piece_type::ROOK && rook->aliance == this->aliance && rook->move_counter == 0;
+	// 	piece *rook = game_board->game_board[rook_x][m.get_y()m];
+	// 	rook_can_castle = rook->piece_type == piece_type::ROOK && rook->aliance == this->aliance && rook->coordinates_counter == 0;
 	// }
 	// if (rook_can_castle && king_can_castle)
 	// {
@@ -94,10 +92,10 @@ void piece::set_position(int x, int y)
 
 void piece::increment_move_counter()
 {
-	this->move_counter += 1;
+	this->coordinates_counter += 1;
 }
 
-bool piece::put_self_in_check(board *board, int x_move, int y_move, int king_x, int king_y)
+bool piece::put_self_in_check(board *board, coordinates m, coordinates king_pos)
 {
 	piece_factory *pf = new piece_factory();
 	piece *p = new piece();
@@ -109,7 +107,7 @@ bool piece::put_self_in_check(board *board, int x_move, int y_move, int king_x, 
 
 		return true;
 	}
-	bool enemy_piece_can_move = false;
+	bool enemy_piece_can_coordinates = false;
 	if (recursion_counter == 0)
 	{
 
@@ -124,19 +122,19 @@ bool piece::put_self_in_check(board *board, int x_move, int y_move, int king_x, 
 					if (enemy_piece(p))
 					{
 						recursion_counter += 1;
-						// the king is moving, check the spot it is moving to to see if it can move there.
+						// the king is moving, check the spot it is moving to to see if it can coordinates there.
 						if (this->piece_type == piece_type::KING)
 						{
-							board->game_board[x_move][y_move] = pf->make_piece(this->aliance, piece_type::PAWN);
-							// auto chkmt = std::async(&piece::mo, this, x_move, y_move);
-							auto can_move = std::async(&piece::move, p, board, x_move, y_move);
-							putting_self_in_check = can_move.get();
+							board->game_board[m.get_x()][m.get_y()] = pf->make_piece(this->aliance, piece_type::PAWN);
+							// auto chkmt = std::async(&piece::mo, this, m.get_x()m, m.get_y()m);
+							auto can_coordinates = std::async(&piece::move, p, board, m);
+							putting_self_in_check = can_coordinates.get();
 						}
-						// if different piece is moving, check to see if any enemies can move to the kings position.
+						// if different piece is moving, check to see if any enemies can coordinates to the kings position.
 						else
 						{
 
-							putting_self_in_check = p->move(board, king_x, king_y);
+							putting_self_in_check = p->move(board, king_pos);
 						}
 						if (putting_self_in_check)
 						{
@@ -165,24 +163,24 @@ int piece::y_vector(int y_move)
 {
 	return this->y_pos - y_move;
 }
-int piece::diagonal_vector(int x_move, int y_move)
+int piece::diagonal_vector(coordinates m)
 {
-	int x = this->x_vector(x_move);
-	int y = this->y_vector(y_move);
+	int x = this->x_vector(m.get_x());
+	int y = this->y_vector(m.get_y());
 
 	if (x == 0 || y == 0)
 	{
 		return 0;
 	}
-	int move_vector = sqrt(x * x + y * y);
-	return move_vector;
+	int coordinates_vector = sqrt(x * x + y * y);
+	return coordinates_vector;
 }
-bool piece::piece_in_way(board *game_board, int x_move, int y_move)
+bool piece::piece_in_way(board *game_board, coordinates m)
 {
 	// or if pieces in the way
 	bool piece_in_way = false;
-	int x_vector = this->x_vector(x_move) * -1;
-	int y_vector = this->y_vector(y_move) * -1;
+	int x_vector = this->x_vector(m.get_x()) * -1;
+	int y_vector = this->y_vector(m.get_y()) * -1;
 	int x = 0;
 	int y = 0;
 
@@ -199,7 +197,7 @@ bool piece::piece_in_way(board *game_board, int x_move, int y_move)
 			{
 				y_vector < 0 ? y-- : y++;
 			}
-			if ((this->x_pos + x) == x_move && (this->y_pos + y) == y_move)
+			if ((this->x_pos + x) == m.get_x() && (this->y_pos + y) == m.get_y())
 			{
 				break;
 			}

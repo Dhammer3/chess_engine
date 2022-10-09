@@ -45,8 +45,7 @@ piece *board::get_piece(int x, int y)
         return this->game_board[x][y];
     }
 }
-#include <thread>
-#include <future>
+
 bool board::capturing_own_piece(aliance::Enum a, int x, int y)
 {
     if (piece_in_location(x, y))
@@ -164,7 +163,8 @@ bool board::checkmate_helper(std::vector<piece *> pieces, aliance::Enum a)
             {
                 for (int y = 0; y < 8; y++)
                 {
-                    auto can_move = std::async(&piece::move, p, this, x, y);
+                    coordinates move(x, y);
+                    auto can_move = std::async(&piece::move, p, this, move);
                     // std::cout << "****finished thread..." << std::endl;
                     // std::cout << "------------------------------" << std::endl;
 

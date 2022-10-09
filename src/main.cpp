@@ -24,6 +24,8 @@ int main()
 	board gb(pieces, window, &mBoard);
 
 	unit_tests ut(pf);
+	// unit_tests ut(test_pf);
+
 	ut.run_all_tests();
 	gb.draw_board(gb.pieces);
 
@@ -59,20 +61,21 @@ int main()
 				sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
 				move_x = static_cast<int>(mouse_pos.x / SQUARE_SIZE);
 				move_y = static_cast<int>(mouse_pos.y / SQUARE_SIZE);
+				coordinates move(move_x, move_y);
 				if (selected_a_piece)
 				{
 					selected_a_piece = false;
-					if (selected_piece->move(&gb, move_x, move_y))
+					if (selected_piece->move(&gb, move))
 					{
-						if (gb.game_board[move_x][move_y])
+						if (gb.game_board[move.get_x()][move.get_y()])
 						{
-							selected_piece->set_position(move_x, move_y);
+							selected_piece->set_position(move.get_x(), move.get_y());
 							selected_piece->increment_move_counter();
-							gb.remove_piece(gb.game_board[move_x][move_y]);
+							gb.remove_piece(gb.game_board[move.get_x()][move.get_y()]);
 						}
 						else
 						{
-							selected_piece->set_position(move_x, move_y);
+							selected_piece->set_position(move.get_x(), move.get_y());
 							selected_piece->increment_move_counter();
 						}
 						// if (checkmate)

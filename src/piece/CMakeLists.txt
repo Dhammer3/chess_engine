@@ -4,7 +4,7 @@ FetchContent_Declare(
  GIT_TAG 2.5.1
 )
 FetchContent_MakeAvailable(SFML)
-add_library(piece piece.cpp king.cpp queen.cpp bishop.cpp rook.cpp pawn.cpp knight.cpp piece_factory.cpp)
+add_library(piece piece.cpp king.cpp queen.cpp bishop.cpp rook.cpp pawn.cpp knight.cpp piece_factory.cpp coordinates.cpp)
 target_include_directories(piece
  PUBLIC
   PUBLIC ${CMAKE_SOURCE_DIR}/board/

@@ -1,4 +1,5 @@
 #include "piece_factory.h"
+#include "coordinates.h"
 #include "../board/board.h"
 #include <SFML/Graphics.hpp>
 class unit_tests
@@ -17,7 +18,7 @@ public:
     unit_tests(piece_factory pf);
     void reset_board();
     void put_other_player_in_check();
-    void get_put_in_check();
+    void put_self_in_check();
     void check();
     void run_all_tests();
 };
