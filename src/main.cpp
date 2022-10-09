@@ -22,6 +22,7 @@ int main()
 	std::vector<piece *> pieces = pf.get_pieces();
 
 	board gb(pieces, window, &mBoard);
+	coordinates selected_piece_coords, move;
 
 	unit_tests ut(pf);
 	// unit_tests ut(test_pf);
@@ -46,12 +47,12 @@ int main()
 					sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
 					init_x = static_cast<int>(mouse_pos.x / SQUARE_SIZE);
 					init_y = static_cast<int>(mouse_pos.y / SQUARE_SIZE);
-
+					selected_piece_coords.set(init_x, init_y);
 					// selected a piece
 
-					if (gb.piece_in_location(init_x, init_y))
+					if (gb.piece_in_location(selected_piece_coords))
 					{
-						selected_piece = gb.get_piece(init_x, init_y);
+						selected_piece = gb.get_piece(selected_piece_coords);
 						selected_a_piece = true;
 					}
 				}

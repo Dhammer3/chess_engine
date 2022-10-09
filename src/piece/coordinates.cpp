@@ -22,3 +22,9 @@ void coordinates::set_y(int y)
 {
     this->y = y;
 }
+
+void coordinates::set(int x, int y)
+{
+    this->set_x(x);
+    this->set_y(y);
+}

@@ -34,31 +34,31 @@ void board::set_board(std::vector<piece *> pieces)
         this->game_board[p->x_pos][p->y_pos] = p;
     }
 }
-bool board::piece_in_location(int x, int y)
+bool board::piece_in_location(coordinates move)
 {
-    return this->game_board[x][y] != NULL;
+    return this->game_board[move.get_x()][move.get_y()] != NULL;
 }
-piece *board::get_piece(int x, int y)
+piece *board::get_piece(coordinates piece_loc)
 {
-    if (piece_in_location(x, y))
+    if (piece_in_location(piece_loc))
     {
-        return this->game_board[x][y];
+        return this->game_board[piece_loc.get_x()][piece_loc.get_y()];
     }
 }
 
-bool board::capturing_own_piece(aliance::Enum a, int x, int y)
+bool board::capturing_own_piece(aliance::Enum a, coordinates move)
 {
-    if (piece_in_location(x, y))
+    if (piece_in_location(move))
     {
-        return this->game_board[x][y]->aliance == a;
+        return this->game_board[move.get_x()][move.get_y()]->aliance == a;
     }
     return false;
 }
-bool board::capturing_king(int x, int y)
+bool board::capturing_king(coordinates move)
 {
-    if (piece_in_location(x, y))
+    if (piece_in_location(move))
     {
-        return this->game_board[x][y]->piece_type == piece_type::KING;
+        return this->game_board[move.get_x()][move.get_y()]->piece_type == piece_type::KING;
     }
     return false;
 }

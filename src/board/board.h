@@ -1,11 +1,11 @@
 #if !defined(__BOARD_H__)
 #define __BOARD_H__
-#include "../piece/piece.h"
+#include "piece.h"
 #include <SFML/Graphics.hpp>
-
 const int OFFSET = -2;
 const int WINDOW_SIZE = 455;
 const float SQUARE_SIZE = WINDOW_SIZE / 8;
+class coordinates;
 class piece;
 class board
 {
@@ -22,14 +22,13 @@ public:
 	piece *(*get_board())[8];
 	void clear_board();
 	void set_board(std::vector<piece *> pieces);
-	bool piece_in_location(int x, int y);
-	piece *get_piece(int x, int y);
-	bool capturing_own_piece(aliance::Enum a, int x, int y);
-	bool capturing_king(int x, int y);
+	bool piece_in_location(coordinates move);
+	piece *get_piece(coordinates piece_loc);
+	bool capturing_own_piece(aliance::Enum a, coordinates move);
+	bool capturing_king(coordinates move);
 	void draw_board(std::vector<piece *> pieces);
 	void remove_piece(piece *p);
 	bool checkmate(aliance::Enum a);
-	bool in_check(aliance::Enum a, int kingX, int kingY); // refactor?
 	bool in_checkmate(aliance::Enum);
 	bool checkmate_helper(std::vector<piece *> pieces, aliance::Enum a);
 

@@ -23,13 +23,12 @@ bool pawn::move(board *game_board, coordinates m)
 	{
 		return false;
 	}
-	if (y_squared == 1 && x_squared == 0 && game_board->piece_in_location(m.get_x(), m.get_y()))
+	if (y_squared == 1 && x_squared == 0 && game_board->piece_in_location(m))
 	{
 		valid_coordinates = false;
 	}
 	if (x_squared + y_squared >= 2)
 	{
-
 		if (x_squared > 1)
 		{
 			valid_coordinates = false;

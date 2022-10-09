@@ -46,8 +46,8 @@ bool piece::move(board *game_board, coordinates m)
 
 	// if they are in check after the coordinates, they cannot make that coordinates.
 	bool piece_in_way = this->piece_in_way(game_board, m);
-	bool capturing_own_piece = game_board->capturing_own_piece(this->aliance, m.get_x(), m.get_y());
-	bool capturing_king = game_board->capturing_king(m.get_x(), m.get_y());
+	bool capturing_own_piece = game_board->capturing_own_piece(this->aliance, m);
+	bool capturing_king = game_board->capturing_king(m);
 	if (capturing_own_piece || in_check || piece_in_way || capturing_king)
 	{
 		valid_coordinates = false;
@@ -201,7 +201,8 @@ bool piece::piece_in_way(board *game_board, coordinates m)
 			{
 				break;
 			}
-			if (game_board->piece_in_location(this->x_pos + x, this->y_pos + y))
+			coordinates temp(this->x_pos + x, this->y_pos + y);
+			if (game_board->piece_in_location(temp))
 			{
 				piece_in_way = true;
 			}
