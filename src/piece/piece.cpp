@@ -29,13 +29,14 @@ bool piece::move(board *game_board, coordinates m)
 	bool null_king_pos = king_pos.empty();
 	int &king_x = king_pos[0];
 	int &king_y = king_pos[1];
-	coordinates king_position(king_x, king_y);
 	// copy the board
 	board *game_board_copy = new board(*game_board);
 
 	// make the mock coordinates and set the king pos to empty
 	if (!null_king_pos)
 	{
+		coordinates king_position(king_x, king_y);
+
 		game_board_copy->game_board[this->x_pos][this->y_pos] = NULL;
 		game_board_copy->game_board[king_x][king_y] = NULL;
 		game_board_copy->game_board[m.get_x()][m.get_y()] = this;

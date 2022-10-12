@@ -28,8 +28,10 @@ public:
 	bool capturing_king(coordinates move);
 	void draw_board(std::vector<piece *> pieces);
 	void remove_piece(piece *p);
+	std::vector<piece *> get_enemy_pieces(aliance::Enum a);
+	bool in_check(aliance::Enum a);
+	bool in_check_helper(std::vector<piece *> pieces, aliance::Enum a, coordinates king_position, board *game_board_copy);
 	bool checkmate(aliance::Enum a);
-	bool in_checkmate(aliance::Enum);
 	bool checkmate_helper(std::vector<piece *> pieces, aliance::Enum a);
 
 	std::vector<int> get_king_pos(aliance::Enum a);

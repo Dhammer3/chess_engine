@@ -114,14 +114,75 @@ std::vector<int> board::get_king_pos(aliance::Enum a)
     }
     return ret;
 }
-// returns true if aliance is in checkmate
+std::vector<piece *> board::get_enemy_pieces(aliance::Enum a)
+{
+    std::vector<piece *> enemy_pieces;
+    for (int i = 0; i < this->pieces.size(); i++)
+    {
+        if (this->pieces[i]->aliance != a)
+        {
+            enemy_pieces.push_back(this->pieces[i]);
+        }
+    }
+    return enemy_pieces;
+}
+bool board::in_check(aliance::Enum a)
+{
+    bool in_check = false;
+    std::vector<int> king_pos = this->get_king_pos(a);
+    int &king_x = king_pos[0];
+    int &king_y = king_pos[1];
+    coordinates king_position(king_x, king_y);
+    board *game_board_copy = new board(*this);
+    piece_factory *pf = new piece_factory();
+    game_board_copy->game_board[king_x][king_y] = pf->make_piece(a, piece_type::PAWN);
+    game_board_copy->set_board(game_board_copy->pieces);
+    // std::vector<piece*> enemy_pieces= this->get_enemy_pieces(a);
+    int split_size = 4;
+    std::size_t const split = game_board_copy->pieces.size() / split_size;
+
+    for (int n = 0; n < split_size - 1; n++)
+    {
+        std::vector<piece *> split_pieces(game_board_copy->pieces.begin() + n * split, game_board_copy->pieces.begin() + (n + 1) * split);
+        // in_check = in_check_helper(split_pieces, a, king_position, game_board_copy);
+        // auto chk = std::async(&board::in_check, this, a);
+
+        auto chk = std::async(&board::in_check_helper, this, split_pieces, a, king_position, game_board_copy);
+        if (chk.get())
+        {
+            return true;
+        }
+    }
+
+    return in_check;
+}
+bool board::in_check_helper(std::vector<piece *> pieces, aliance::Enum a, coordinates king_position, board *game_board_copy)
+{
+    // std::cout << "------launching thread..." << std::endl;
+
+    for (int i = 0; i < pieces.size(); i++)
+    {
+        if (pieces[i]->aliance != a)
+        {
+            if (pieces[i]->move(game_board_copy, king_position))
+            {
+                // std::cout << "------terminating thread..." << std::endl;
+
+                return true;
+            }
+        }
+    }
+    // std::cout << "------terminating thread..." << std::endl;
+
+    return false;
+}
+
 bool board::checkmate(aliance::Enum a)
 {
     int split_size = 4;
     // std::vector<std::thread> threads(split_size);
 
     bool checkmate = false;
-    int exec_count = 0;
     piece *p = new piece();
     std::size_t const split = this->pieces.size() / split_size;
 
@@ -129,8 +190,6 @@ bool board::checkmate(aliance::Enum a)
     for (int n = 0; n < split_size - 1; n++)
     {
         std::vector<piece *> split_pieces(this->pieces.begin() + n * split, this->pieces.begin() + (n + 1) * split);
-        // checkmate = std::thread(checkmate_helper, split_pieces, a);
-        // std::thread t1 = std::thread(&board::checkmate_helper, this, split_pieces, a);
         auto chkmt = std::async(&board::checkmate_helper, this, split_pieces, a);
         if (chkmt.get())
         {
@@ -149,7 +208,6 @@ bool board::checkmate_helper(std::vector<piece *> pieces, aliance::Enum a)
 
     piece *p = new piece();
     std::vector<int> king_pos = this->get_king_pos(a);
-    bool null_king_pos = king_pos.empty();
     int &king_x = king_pos[0];
     int &king_y = king_pos[1];
     p = this->game_board[king_x][king_y];
@@ -165,9 +223,6 @@ bool board::checkmate_helper(std::vector<piece *> pieces, aliance::Enum a)
                 {
                     coordinates move(x, y);
                     auto can_move = std::async(&piece::move, p, this, move);
-                    // std::cout << "****finished thread..." << std::endl;
-                    // std::cout << "------------------------------" << std::endl;
-
                     return can_move.get();
                 }
             }

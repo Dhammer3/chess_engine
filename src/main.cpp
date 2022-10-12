@@ -1,6 +1,7 @@
 #include <iostream>
 #include "piece_factory.h"
 #include "unit_tests.h"
+#include "game_info.h"
 #include <SFML/Graphics.hpp>
 int main()
 {
@@ -79,6 +80,16 @@ int main()
 							selected_piece->set_position(move.get_x(), move.get_y());
 							selected_piece->increment_move_counter();
 						}
+
+						game_info game_information(gb, selected_piece_coords, move);
+						if (game_information.get_check_status(aliance::Enum::WHITE))
+						{
+							std::cout << "black in check!" << std::endl;
+						}
+						if (game_information.get_check_status(aliance::Enum::BLACK))
+						{
+							std::cout << "white in check!" << std::endl;
+						}
 						// if (checkmate)
 						// {
 						// 	std::cout << "WHITE WINS!" << std::endl;
@@ -92,8 +103,6 @@ int main()
 
 				// checkmate = cp->checkmate(aliance::BLACK);
 
-				board *cp = new board(gb.pieces);
-				bool checkmate = cp->checkmate(aliance::BLACK);
 				gb.draw_board(gb.pieces);
 			}
 		}

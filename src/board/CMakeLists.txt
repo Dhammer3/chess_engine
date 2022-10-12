@@ -4,7 +4,7 @@ FetchContent_Declare(
  GIT_TAG 2.5.1
 )
 FetchContent_MakeAvailable(SFML)
-add_library(board board.cpp)
+add_library(board board.cpp game_info.cpp)
 target_include_directories(board
  PUBLIC
   PUBLIC ${CMAKE_SOURCE_DIR}/piece/
