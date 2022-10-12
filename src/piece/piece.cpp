@@ -46,10 +46,11 @@ bool piece::move(board *game_board, coordinates m)
 	}
 
 	// if they are in check after the coordinates, they cannot make that coordinates.
-	bool piece_in_way = this->piece_in_way(game_board, m);
-	bool capturing_own_piece = game_board->capturing_own_piece(this->aliance, m);
-	bool capturing_king = game_board->capturing_king(m);
-	if (capturing_own_piece || in_check || piece_in_way || capturing_king)
+	std::future<bool> piece_in_way = std::async(&piece::piece_in_way, this, game_board, x_move, y_move);
+	std::future<bool> capturing_own_piece = std::async(&board::capturing_own_piece, game_board, this->aliance, x_move, y_move);
+	std::future<bool> capturing_king = std::async(&board::capturing_king, game_board, x_move, y_move);
+
+	if (capturing_own_piece.get() || in_check || piece_in_way.get() || capturing_king.get())
 	{
 		valid_move = false;
 	}
